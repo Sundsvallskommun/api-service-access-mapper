@@ -4,3 +4,15 @@
 logging:
   level:
     root: DEBUG
+
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          active-directory:
+            token-uri: http://token.url
+        registration:
+          active-directory:
+            client-id: the-client-id
+            client-secret: the-client-secret
