@@ -1,10 +1,14 @@
 package se.sundsvall.accessmapper.api.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
 
+@Schema(description = "Access type model")
 public class AccessType {
+	@Schema(description = "Access type", example = "FA")
 	private String type;
+	@Schema(description = "Access by type")
 	private List<Access> access;
 
 	public static AccessType create() {

@@ -1,10 +1,13 @@
 package se.sundsvall.accessmapper.api.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 
+@Schema(description = "Access model")
 public class Access {
-
+	@Schema(description = "Access pattern", example = "FA/**")
 	private String pattern;
+	@Schema(description = "Access level", example = "LR")
 	private AccessLevel accessLevel;
 
 	public static Access create() {

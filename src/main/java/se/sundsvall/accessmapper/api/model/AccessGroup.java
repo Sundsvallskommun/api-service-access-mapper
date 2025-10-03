@@ -1,10 +1,14 @@
 package se.sundsvall.accessmapper.api.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
 
+@Schema(description = "Access group model")
 public class AccessGroup {
+	@Schema(description = "Access group", example = "G1")
 	private String group;
+	@Schema(description = "Access by type")
 	private List<AccessType> accessByType;
 
 	public static AccessGroup create() {
