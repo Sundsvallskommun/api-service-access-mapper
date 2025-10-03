@@ -1,0 +1,513 @@
+openapi: 3.0.1
+info:
+  title: Active Directory(AD)
+  version: v2
+paths:
+  /api/v2/activedirectory/api-docs:
+    get:
+      tags:
+        - ActiveDirectory
+      summary: OpenAPI specification
+      operationId: getApiDocs
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      x-auth-type: None
+  '/api/v2/activedirectory/{municipalityId}/search/{domain}':
+    get:
+      tags:
+        - ActiveDirectory
+      summary: Sök objekt i Active Directory för domän.
+      operationId: searchActiveDirectory
+      parameters:
+        - name: domain
+          in: path
+          description: AD domän
+          required: true
+          schema:
+            type: string
+        - name: objectName
+          in: query
+          description: 'Namn på Objekt. Wildcard (*) kan användas, t.ex. ```*draken*```.'
+          schema:
+            type: string
+        - name: objectClass
+          in: query
+          description: 'Typ av Objekt, default ''All'''
+          schema:
+            $ref: '#/components/schemas/SchemaFilter'
+        - name: municipalityId
+          in: path
+          description: Kommunkod
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OUChildren'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OUChildren'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OUChildren'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  '/api/v2/activedirectory/{municipalityId}/groupmembers/{domain}/{group}':
+    get:
+      tags:
+        - ActiveDirectory
+      summary: 'Lista medlemmar i AD Grupp, med namn eller guid'
+      operationId: getGroupMembers
+      parameters:
+        - name: domain
+          in: path
+          description: AD domän
+          required: true
+          schema:
+            type: string
+        - name: group
+          in: path
+          description: Gruppens Namn eller Guid
+          required: true
+          schema:
+            type: string
+        - name: municipalityId
+          in: path
+          description: Kommunkod
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OUChildren'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OUChildren'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OUChildren'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  '/api/v2/activedirectory/{municipalityId}/usergroups/{domain}/{user}':
+    get:
+      tags:
+        - ActiveDirectory
+      summary: 'Lista användares AD-grupper, med loginname/username eller ADGuid'
+      operationId: getUserGroups
+      parameters:
+        - name: domain
+          in: path
+          description: AD domän
+          required: true
+          schema:
+            type: string
+        - name: user
+          in: path
+          description: Användares loginname/username eller ADGuid
+          required: true
+          schema:
+            type: string
+        - name: municipalityId
+          in: path
+          description: Kommunkod
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OUChildren'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OUChildren'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OUChildren'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  '/api/v2/activedirectory/{municipalityId}/isuseringroup/{domain}/{user}/{group}':
+    get:
+      tags:
+        - ActiveDirectory
+      summary: Kontrollera om användare är medlem i AD-grupp
+      operationId: isUserInGroup
+      parameters:
+        - name: domain
+          in: path
+          description: AD domän
+          required: true
+          schema:
+            type: string
+        - name: user
+          in: path
+          description: Användares loginname/username eller ADGuid
+          required: true
+          schema:
+            type: string
+        - name: group
+          in: path
+          description: Gruppens namn eller ADGuid
+          required: true
+          schema:
+            type: string
+        - name: municipalityId
+          in: path
+          description: Kommunkod
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: uuid
+            application/json:
+              schema:
+                type: string
+                format: uuid
+            text/json:
+              schema:
+                type: string
+                format: uuid
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  '/api/v2/activedirectory/{municipalityId}/personidbyadguid/{domain}/{userADGuid}':
+    get:
+      tags:
+        - ActiveDirectory
+      summary: meta PersonId från AD Guid
+      operationId: getPersonIdByAdGuid
+      parameters:
+        - name: domain
+          in: path
+          description: AD domän
+          required: true
+          schema:
+            type: string
+        - name: userADGuid
+          in: path
+          description: Personens AD Guid
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: municipalityId
+          in: path
+          description: Kommunkod
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: uuid
+            application/json:
+              schema:
+                type: string
+                format: uuid
+            text/json:
+              schema:
+                type: string
+                format: uuid
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  '/api/v2/activedirectory/{municipalityId}/personidbyloginname/{loginname}':
+    get:
+      tags:
+        - ActiveDirectory
+      operationId: getPersonIdByLoginName
+      parameters:
+        - name: loginname
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: municipalityId
+          in: path
+          description: Kommunkod
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: uuid
+            application/json:
+              schema:
+                type: string
+                format: uuid
+            text/json:
+              schema:
+                type: string
+                format: uuid
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+components:
+  schemas:
+    OUChildren:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        schemaClassName:
+          type: string
+          nullable: true
+        guid:
+          type: string
+          format: uuid
+          nullable: true
+        ouPath:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        domain:
+          type: string
+          nullable: true
+        isLinked:
+          type: boolean
+        personId:
+          type: string
+          format: uuid
+          nullable: true
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+      additionalProperties: { }
+    SchemaFilter:
+      type: string
+      enum:
+        - organizationalUnit
+        - container
+        - group
+        - user
+        - computer
+        - all
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      description: JWT Authorization header using the Bearer scheme.
+      name: X-JWT-Assertion
+      in: header
+security:
+  - Bearer: [ ]
+tags:
+  - name: ActiveDirectory
+    description: "Handles AD information\r\nThis version handles untrusted domains and require a muncipalityId"
