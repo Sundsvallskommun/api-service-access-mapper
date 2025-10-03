@@ -6,12 +6,12 @@
 		<artifactId>dept44-service-parent</artifactId>
 		<version>6.0.13</version>
 		<relativePath />
-		<!-- lookup parent from repository -->
+		<!-- lookup parent from the repository -->
 	</parent>
 	<groupId>se.sundsvall</groupId>
-	<artifactId>template-spring-boot</artifactId>
+	<artifactId>api-service-access-mapper</artifactId>
 	<version>1.0</version>
-	<name>template</name>
+	<name>api-service-access-mapper</name>
 	<properties />
 	<dependencies>
 		<dependency>
