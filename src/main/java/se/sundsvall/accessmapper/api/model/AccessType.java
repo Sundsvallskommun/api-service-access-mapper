@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Schema(description = "Access type model")
 public class AccessType {
-	@Schema(description = "Access type", example = "FA")
+	@Schema(description = "Access type", example = "label")
 	private String type;
 	@Schema(description = "Access by type")
 	private List<Access> access;
