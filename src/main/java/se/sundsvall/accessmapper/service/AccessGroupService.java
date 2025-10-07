@@ -5,6 +5,9 @@ import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroup;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroupEntity;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroups;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withAccessType;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withMunicipalityId;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withNamespace;
 import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 import java.util.List;
@@ -30,7 +33,11 @@ public class AccessGroupService {
 	}
 
 	public List<AccessGroup> getAccessGroups(final String municipalityId, final String namespace, final String type) {
-		return toAccessGroups(accessGroupRepository.findByMunicipalityIdAndNamespaceAndAccessByType_Type(municipalityId, namespace, type));
+		final var specification = withMunicipalityId(municipalityId)
+			.and(withNamespace(namespace))
+			.and(withAccessType(type));
+
+		return toAccessGroups(accessGroupRepository.findAll(specification));
 	}
 
 	public void createAccessGroup(final String municipalityId, final String namespace, final String groupId, final AccessGroup accessGroup) {

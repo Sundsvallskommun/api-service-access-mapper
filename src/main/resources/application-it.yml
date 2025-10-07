@@ -17,3 +17,17 @@ spring:
           schema-generation:
             database:
               action: validate
+
+  security:
+    oauth2:
+      client:
+        provider:
+          active-directory:
+            token-uri: http://localhost:${wiremock.server.port:}/api-gateway/token
+        registration:
+          active-directory:
+            client-id: the-client-id
+            client-secret: the-client-secret
+integration:
+  active-directory:
+    url: http://localhost:${wiremock.server.port:}/api-active-directory
