@@ -38,3 +38,6 @@ spring:
           active-directory:
             client-id: the-client-id
             client-secret: the-client-secret
+integration:
+  active-directory:
+    url: https://active-directory.url

@@ -42,7 +42,7 @@ class AccessResourceFailureTest {
 	@Test
 	void getAccessDetailsWithInvalidNamespace() {
 
-		// Call
+		// Act
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(PATH).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "adId", AD_ID)))
 			.exchange()
@@ -58,14 +58,14 @@ class AccessResourceFailureTest {
 			.extracting(Violation::getField, Violation::getMessage)
 			.containsExactlyInAnyOrder(tuple("getAccessDetails.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
 
-		// Verification
+		// Assert
 		verifyNoInteractions(accessServiceMock);
 	}
 
 	@Test
 	void getAccessDetailsWithInvalidMunicipalityId() {
 
-		// Call
+		// Act
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(PATH).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "adId", AD_ID)))
 			.exchange()
@@ -81,7 +81,7 @@ class AccessResourceFailureTest {
 			.extracting(Violation::getField, Violation::getMessage)
 			.containsExactlyInAnyOrder(tuple("getAccessDetails.municipalityId", "not a valid municipality ID"));
 
-		// Verification
+		// Assert
 		verifyNoInteractions(accessServiceMock);
 	}
 
@@ -92,7 +92,7 @@ class AccessResourceFailureTest {
 		when(accessServiceMock.getAccessDetails(MUNICIPALITY_ID, NAMESPACE, AD_ID, null))
 			.thenThrow(Problem.valueOf(NOT_FOUND, "Access details not found for adId: " + AD_ID));
 
-		// Call
+		// Act
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(PATH).build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "adId", AD_ID)))
 			.exchange()
