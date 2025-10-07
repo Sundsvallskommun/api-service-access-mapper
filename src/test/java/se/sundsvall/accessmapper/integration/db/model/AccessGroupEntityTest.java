@@ -27,21 +27,21 @@ class AccessGroupEntityTest {
 	@Test
 	void builder() {
 		// Arrange
-		final var groupId = "groupId";
+		final var id = "id";
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
 		final var accessByType = List.of(new AccessTypeEntity());
 
 		// Act
 		final var result = AccessGroupEntity.create()
-			.withGroupId(groupId)
+			.withId(id)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
 			.withAccessByType(accessByType);
 
 		// Assert
 		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(result.getGroupId()).isEqualTo(groupId);
+		assertThat(result.getId()).isEqualTo(id);
 		assertThat(result.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(result.getNamespace()).isEqualTo(namespace);
 		assertThat(result.getAccessByType()).isEqualTo(accessByType);

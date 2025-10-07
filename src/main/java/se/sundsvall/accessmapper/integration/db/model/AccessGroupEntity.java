@@ -16,7 +16,8 @@ import java.util.Objects;
 public class AccessGroupEntity {
 
 	@Id
-	private String groupId;
+	@Column(name = "group_id")
+	private String id;
 
 	@Column(name = "municipality_id")
 	private String municipalityId;
@@ -32,16 +33,16 @@ public class AccessGroupEntity {
 		return new AccessGroupEntity();
 	}
 
-	public String getGroupId() {
-		return groupId;
+	public String getId() {
+		return id;
 	}
 
-	public void setGroupId(final String groupId) {
-		this.groupId = groupId;
+	public void setId(final String id) {
+		this.id = id;
 	}
 
-	public AccessGroupEntity withGroupId(final String groupId) {
-		this.groupId = groupId;
+	public AccessGroupEntity withId(final String id) {
+		this.id = id;
 		return this;
 	}
 
@@ -89,18 +90,18 @@ public class AccessGroupEntity {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		final AccessGroupEntity that = (AccessGroupEntity) o;
-		return Objects.equals(groupId, that.groupId) && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(namespace, that.namespace) && Objects.equals(accessByType, that.accessByType);
+		return Objects.equals(id, that.id) && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(namespace, that.namespace) && Objects.equals(accessByType, that.accessByType);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(groupId, municipalityId, namespace, accessByType);
+		return Objects.hash(id, municipalityId, namespace, accessByType);
 	}
 
 	@Override
 	public String toString() {
 		return "AccessGroupEntity{" +
-			"groupId='" + groupId + '\'' +
+			"id='" + id + '\'' +
 			", municipalityId='" + municipalityId + '\'' +
 			", namespace='" + namespace + '\'' +
 			", accessByType=" + accessByType +
