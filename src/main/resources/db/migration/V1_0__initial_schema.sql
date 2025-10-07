@@ -9,10 +9,10 @@ create table if not exists access
 
 create table if not exists access_group
 (
-    groupId         varchar(255) not null,
+    id              varchar(255) not null,
     municipality_id varchar(255),
     namespace       varchar(255),
-    primary key (groupId)
+    primary key (id)
 ) engine = InnoDB;
 
 create table if not exists access_type
@@ -31,4 +31,4 @@ alter table if exists access
 alter table if exists access_type
     add constraint fk_access_group_id
         foreign key if not exists (access_group_id)
-            references access_group (groupId);
+            references access_group (id);

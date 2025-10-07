@@ -16,7 +16,7 @@ import java.util.Objects;
 public class AccessGroupEntity {
 
 	@Id
-	@Column(name = "group_id")
+	@Column(name = "id")
 	private String id;
 
 	@Column(name = "municipality_id")

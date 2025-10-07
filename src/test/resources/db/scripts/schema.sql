@@ -8,10 +8,10 @@
     ) engine=InnoDB;
 
     create table access_group (
-        group_id varchar(255) not null,
+        id varchar(255) not null,
         municipality_id varchar(255),
         namespace varchar(255),
-        primary key (group_id)
+        primary key (id)
     ) engine=InnoDB;
 
     create table access_type (
@@ -29,4 +29,4 @@
     alter table if exists access_type 
        add constraint fk_access_group_id 
        foreign key (access_group_id) 
-       references access_group (group_id);
+       references access_group (id);
