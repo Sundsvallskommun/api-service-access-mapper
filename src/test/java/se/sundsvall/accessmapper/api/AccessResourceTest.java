@@ -38,11 +38,12 @@ class AccessResourceTest {
 
 	@Test
 	void getAccessDetails() {
-		// Parameter values
+		// Arrange
 		final var accessGroups = List.of(new AccessGroup());
 
 		when(accessServiceMock.getAccessDetails(MUNICIPALITY_ID, NAMESPACE, AD_ID, null)).thenReturn(accessGroups);
 
+		// Act
 		final var response = webTestClient.get().uri(builder -> builder.path(PATH)
 			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "adId", AD_ID)))
 			.exchange()
@@ -51,20 +52,20 @@ class AccessResourceTest {
 			.expectBodyList(AccessGroup.class)
 			.returnResult();
 
+		// Assert
 		assertThat(response.getResponseBody()).isEqualTo(accessGroups);
-
-		// Verification
 		verify(accessServiceMock).getAccessDetails(MUNICIPALITY_ID, NAMESPACE, AD_ID, null);
 	}
 
 	@Test
 	void getAccessDetailsWithType() {
-		// Parameter values
+		// Arrange
 		final var type = "label";
 		final var accessGroups = List.of(new AccessGroup());
 
 		when(accessServiceMock.getAccessDetails(MUNICIPALITY_ID, NAMESPACE, AD_ID, type)).thenReturn(accessGroups);
 
+		// Act
 		final var response = webTestClient.get().uri(builder -> builder.path(PATH)
 			.queryParam("type", type)
 			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "adId", AD_ID)))
@@ -74,9 +75,8 @@ class AccessResourceTest {
 			.expectBodyList(AccessGroup.class)
 			.returnResult();
 
+		// Assert
 		assertThat(response.getResponseBody()).isEqualTo(accessGroups);
-
-		// Verification
 		verify(accessServiceMock).getAccessDetails(MUNICIPALITY_ID, NAMESPACE, AD_ID, type);
 	}
 }

@@ -18,11 +18,11 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
 import org.zalando.problem.violations.Violation;
 import se.sundsvall.accessmapper.Application;
 import se.sundsvall.accessmapper.api.model.AccessGroup;
-import se.sundsvall.accessmapper.service.AccessConfigurationService;
+import se.sundsvall.accessmapper.service.AccessGroupService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
-class AccessConfigurationResourceFailureTest {
+class AccessGroupResourceFailureTest {
 
 	private static final String NAMESPACE = "namespace";
 	private static final String MUNICIPALITY_ID = "2281";
@@ -35,12 +35,12 @@ class AccessConfigurationResourceFailureTest {
 	private WebTestClient webTestClient;
 
 	@MockitoBean
-	private AccessConfigurationService accessConfigurationServiceMock;
+	private AccessGroupService accessGroupServiceMock;
 
 	@Test
-	void getAccessConfigurationsWithInvalidNamespace() {
+	void getAccessGroupsWithInvalidNamespace() {
 
-		// Call
+		// Act
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(PATH).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID)))
 			.exchange()
@@ -54,16 +54,16 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("getAccessConfigurations.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
+			.containsExactlyInAnyOrder(tuple("getAccessGroups.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void getAccessConfigurationsWithInvalidMunicipalityId() {
+	void getAccessGroupsWithInvalidMunicipalityId() {
 
-		// Call
+		// Act
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(PATH).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID)))
 			.exchange()
@@ -77,16 +77,16 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("getAccessConfigurations.municipalityId", "not a valid municipality ID"));
+			.containsExactlyInAnyOrder(tuple("getAccessGroups.municipalityId", "not a valid municipality ID"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void getAccessConfigurationWithInvalidNamespace() {
+	void getAccessGroupWithInvalidNamespace() {
 
-		// Call
+		// Act
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "groupId", GROUP_ID)))
 			.exchange()
@@ -100,16 +100,16 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("getAccessConfiguration.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
+			.containsExactlyInAnyOrder(tuple("getAccessGroup.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void getAccessConfigurationWithInvalidMunicipalityId() {
+	void getAccessGroupWithInvalidMunicipalityId() {
 
-		// Call
+		// Act
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "groupId", GROUP_ID)))
 			.exchange()
@@ -123,16 +123,16 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("getAccessConfiguration.municipalityId", "not a valid municipality ID"));
+			.containsExactlyInAnyOrder(tuple("getAccessGroup.municipalityId", "not a valid municipality ID"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void getAccessConfigurationWithBlankGroupId() {
+	void getAccessGroupWithBlankGroupId() {
 
-		// Call
+		// Act
 		final var response = webTestClient.get()
 			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "groupId", " ")))
 			.exchange()
@@ -146,19 +146,19 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("getAccessConfiguration.groupId", "must not be blank"));
+			.containsExactlyInAnyOrder(tuple("getAccessGroup.groupId", "must not be blank"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void createAccessConfigurationWithInvalidNamespace() {
+	void createAccessGroupWithInvalidNamespace() {
 
-		// Parameters
+		// Arrange
 		final var accessGroup = new AccessGroup();
 
-		// Call
+		// Act
 		final var response = webTestClient.post()
 			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "groupId", GROUP_ID)))
 			.contentType(APPLICATION_JSON)
@@ -174,19 +174,19 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("createAccessConfiguration.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
+			.containsExactlyInAnyOrder(tuple("createAccessGroup.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void createAccessConfigurationWithInvalidMunicipalityId() {
+	void createAccessGroupWithInvalidMunicipalityId() {
 
-		// Parameters
+		// Arrange
 		final var accessGroup = new AccessGroup();
 
-		// Call
+		// Act
 		final var response = webTestClient.post()
 			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "groupId", GROUP_ID)))
 			.contentType(APPLICATION_JSON)
@@ -202,19 +202,19 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("createAccessConfiguration.municipalityId", "not a valid municipality ID"));
+			.containsExactlyInAnyOrder(tuple("createAccessGroup.municipalityId", "not a valid municipality ID"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void createAccessConfigurationWithBlankGroupId() {
+	void createAccessGroupWithBlankGroupId() {
 
-		// Parameters
+		// Arrange
 		final var accessGroup = new AccessGroup();
 
-		// Call
+		// Act
 		final var response = webTestClient.post()
 			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "groupId", " ")))
 			.contentType(APPLICATION_JSON)
@@ -230,19 +230,19 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("createAccessConfiguration.groupId", "must not be blank"));
+			.containsExactlyInAnyOrder(tuple("createAccessGroup.groupId", "must not be blank"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void updateAccessConfigurationWithInvalidNamespace() {
+	void updateAccessGroupWithInvalidNamespace() {
 
-		// Parameters
+		// Arrange
 		final var accessGroup = new AccessGroup();
 
-		// Call
+		// Act
 		final var response = webTestClient.put()
 			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "groupId", GROUP_ID)))
 			.contentType(APPLICATION_JSON)
@@ -258,19 +258,19 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("updateAccessConfiguration.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
+			.containsExactlyInAnyOrder(tuple("updateAccessGroup.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void updateAccessConfigurationWithInvalidMunicipalityId() {
+	void updateAccessGroupWithInvalidMunicipalityId() {
 
-		// Parameters
+		// Arrange
 		final var accessGroup = new AccessGroup();
 
-		// Call
+		// Act
 		final var response = webTestClient.put()
 			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "groupId", GROUP_ID)))
 			.contentType(APPLICATION_JSON)
@@ -286,19 +286,19 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("updateAccessConfiguration.municipalityId", "not a valid municipality ID"));
+			.containsExactlyInAnyOrder(tuple("updateAccessGroup.municipalityId", "not a valid municipality ID"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void updateAccessConfigurationWithBlankGroupId() {
+	void updateAccessGroupWithBlankGroupId() {
 
-		// Parameters
+		// Arrange
 		final var accessGroup = new AccessGroup();
 
-		// Call
+		// Act
 		final var response = webTestClient.put()
 			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "groupId", " ")))
 			.contentType(APPLICATION_JSON)
@@ -314,16 +314,16 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("updateAccessConfiguration.groupId", "must not be blank"));
+			.containsExactlyInAnyOrder(tuple("updateAccessGroup.groupId", "must not be blank"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void deleteAccessConfigurationWithInvalidNamespace() {
+	void deleteAccessGroupWithInvalidNamespace() {
 
-		// Call
+		// Act
 		final var response = webTestClient.delete()
 			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "groupId", GROUP_ID)))
 			.exchange()
@@ -337,16 +337,16 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("deleteAccessConfiguration.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
+			.containsExactlyInAnyOrder(tuple("deleteAccessGroup.namespace", "can only contain A-Z, a-z, 0-9, - and _"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void deleteAccessConfigurationWithInvalidMunicipalityId() {
+	void deleteAccessGroupWithInvalidMunicipalityId() {
 
-		// Call
+		// Act
 		final var response = webTestClient.delete()
 			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "groupId", GROUP_ID)))
 			.exchange()
@@ -360,16 +360,16 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("deleteAccessConfiguration.municipalityId", "not a valid municipality ID"));
+			.containsExactlyInAnyOrder(tuple("deleteAccessGroup.municipalityId", "not a valid municipality ID"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 	@Test
-	void deleteAccessConfigurationWithBlankGroupId() {
+	void deleteAccessGroupWithBlankGroupId() {
 
-		// Call
+		// Act
 		final var response = webTestClient.delete()
 			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "groupId", " ")))
 			.exchange()
@@ -383,10 +383,10 @@ class AccessConfigurationResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::getField, Violation::getMessage)
-			.containsExactlyInAnyOrder(tuple("deleteAccessConfiguration.groupId", "must not be blank"));
+			.containsExactlyInAnyOrder(tuple("deleteAccessGroup.groupId", "must not be blank"));
 
-		// Verification
-		verifyNoInteractions(accessConfigurationServiceMock);
+		// Assert
+		verifyNoInteractions(accessGroupServiceMock);
 	}
 
 }
