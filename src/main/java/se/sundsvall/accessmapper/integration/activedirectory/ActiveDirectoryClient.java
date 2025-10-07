@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import se.sundsvall.accessmapper.integration.activedirectory.configuration.ActiveDirectoryConfiguration;
 
-@FeignClient(name = CLIENT_ID, url = "${integration.eventlog.url}", configuration = ActiveDirectoryConfiguration.class)
+@FeignClient(name = CLIENT_ID, url = "${integration.active-directory.url}", configuration = ActiveDirectoryConfiguration.class)
 @CircuitBreaker(name = CLIENT_ID)
 public interface ActiveDirectoryClient {
 
