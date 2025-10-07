@@ -4,6 +4,7 @@ import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroups;
 
 import generated.se.sundsvall.activedirectory.OUChildren;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import se.sundsvall.accessmapper.api.model.AccessGroup;
 import se.sundsvall.accessmapper.integration.activedirectory.ActiveDirectoryClient;
@@ -27,8 +28,7 @@ public class AccessService {
 		final var accessGroups = activeDirectoryClient.getGroupsForUser(municipalityId, DOMAIN, adId)
 			.stream()
 			.map(OUChildren::getGuid)
-			.toList()
-			.stream()
+			.filter(Objects::nonNull)
 			.map(guid -> accessGroupRepository.findByMunicipalityIdAndNamespaceAndId(municipalityId, namespace, guid.toString()))
 			.filter(accessGroup -> type == null || accessGroup.getAccessByType().stream()
 				.anyMatch(accessType -> type.equals(accessType.getType())))

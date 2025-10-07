@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.CONFLICT;
 import static org.zalando.problem.Status.NOT_FOUND;
 
 import java.util.List;
@@ -83,7 +84,7 @@ class AccessGroupServiceTest {
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(exception.getTitle()).isEqualTo(NOT_FOUND.getReasonPhrase());
-		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found.");
+		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found for municipalityId: municipalityId, namespace: namespace, groupId: groupId.");
 
 		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
 	}
@@ -160,6 +161,7 @@ class AccessGroupServiceTest {
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE);
 
+		when(accessGroupRepositoryMock.existsByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID)).thenReturn(false);
 		when(accessGroupRepositoryMock.save(any(AccessGroupEntity.class))).thenReturn(entity);
 
 		// Act
@@ -167,6 +169,24 @@ class AccessGroupServiceTest {
 
 		// Assert
 		verify(accessGroupRepositoryMock).save(any(AccessGroupEntity.class));
+	}
+
+	@Test
+	void createAccessGroupWithExistingId() {
+		// Arrange
+		when(accessGroupRepositoryMock.existsByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID))
+			.thenReturn(true);
+		final var accessGroup = AccessGroup.create().withGroup(GROUP_ID);
+
+		// Act
+		final var exception = assertThrows(ThrowableProblem.class,
+			() -> service.createAccessGroup(MUNICIPALITY_ID, NAMESPACE, GROUP_ID, accessGroup));
+
+		// Assert
+		assertThat(exception.getStatus()).isEqualTo(CONFLICT);
+		assertThat(exception.getTitle()).isEqualTo(CONFLICT.getReasonPhrase());
+		assertThat(exception.getMessage()).isEqualTo("Conflict: Access group already exists for municipalityId: municipalityId, namespace: namespace, groupId: groupId.");
+
 	}
 
 	@Test
@@ -219,7 +239,7 @@ class AccessGroupServiceTest {
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(exception.getTitle()).isEqualTo(NOT_FOUND.getReasonPhrase());
-		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found.");
+		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found for municipalityId: municipalityId, namespace: namespace, groupId: groupId.");
 
 		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
 	}
@@ -256,7 +276,7 @@ class AccessGroupServiceTest {
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(exception.getTitle()).isEqualTo(NOT_FOUND.getReasonPhrase());
-		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found.");
+		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found for municipalityId: municipalityId, namespace: namespace, groupId: groupId.");
 
 		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
 	}
@@ -298,7 +318,7 @@ class AccessGroupServiceTest {
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(exception.getTitle()).isEqualTo(NOT_FOUND.getReasonPhrase());
-		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found.");
+		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found for municipalityId: municipalityId, namespace: namespace, groupId: groupId.");
 
 		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
 	}

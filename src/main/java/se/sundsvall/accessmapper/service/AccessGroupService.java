@@ -1,9 +1,11 @@
 package se.sundsvall.accessmapper.service;
 
+import static org.zalando.problem.Status.CONFLICT;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroup;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroupEntity;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroups;
+import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,14 @@ public class AccessGroupService {
 	}
 
 	public void createAccessGroup(final String municipalityId, final String namespace, final String groupId, final AccessGroup accessGroup) {
+
+		if (accessGroupRepository.existsByMunicipalityIdAndNamespaceAndId(municipalityId, namespace, groupId)) {
+			throw Problem.valueOf(CONFLICT,
+				"Access group already exists for municipalityId: %s, namespace: %s, groupId: %s.".formatted(
+					sanitizeForLogging(municipalityId),
+					sanitizeForLogging(namespace),
+					sanitizeForLogging(groupId)));
+		}
 		final var entity = toAccessGroupEntity(municipalityId, namespace, groupId, accessGroup);
 		accessGroupRepository.save(entity);
 	}
@@ -51,7 +61,11 @@ public class AccessGroupService {
 
 	public AccessGroupEntity getAccessGroupEntity(final String municipalityId, final String namespace, final String groupId) {
 		return Optional.ofNullable(accessGroupRepository.findByMunicipalityIdAndNamespaceAndId(municipalityId, namespace, groupId))
-			.orElseThrow(() -> Problem.valueOf(NOT_FOUND, "Access group not found."));
+			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
+				"Access group not found for municipalityId: %s, namespace: %s, groupId: %s.".formatted(
+					sanitizeForLogging(municipalityId),
+					sanitizeForLogging(namespace),
+					sanitizeForLogging(groupId))));
 	}
 
 }
