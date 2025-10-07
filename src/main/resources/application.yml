@@ -15,3 +15,22 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   flyway:
     enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          active-directory:
+            authorization-grant-type: client_credentials
+            provider: active-directory
+
+integration:
+  active-directory:
+    connectTimeout: 5
+    readTimeout: 30
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      active-directory:
+        ignoreExceptions: se.sundsvall.dept44.exception.ClientProblem
