@@ -11,6 +11,10 @@ openapi:
 spring:
   application:
     name: access-mapper
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+  flyway:
+    enabled: false
   security:
     oauth2:
       client:
