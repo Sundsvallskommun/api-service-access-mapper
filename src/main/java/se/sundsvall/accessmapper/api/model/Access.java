@@ -2,15 +2,12 @@ package se.sundsvall.accessmapper.api.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
-import org.hibernate.validator.constraints.Length;
 
 @Schema(description = "Access model")
 public class Access {
 	@Schema(description = "Access pattern", example = "FA/**")
 	private String pattern;
 	@Schema(description = "Access level", example = "LR")
-
-	@Length(min = 1)
 	private AccessLevel accessLevel;
 
 	public static Access create() {

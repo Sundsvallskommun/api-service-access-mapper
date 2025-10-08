@@ -84,9 +84,7 @@ class AccessGroupIT extends AbstractAppTest {
 			.withExpectedResponseHeader(CONTENT_TYPE, List.of(APPLICATION_JSON_VALUE))
 			.withExpectedResponse("old.json")
 			.sendRequestAndVerifyResponse();
-
-		System.out.println("lol");
-
+		
 		setupCall()
 			.withServicePath(PATH + "/22222222-2222-2222-2222-222222222222")
 			.withHttpMethod(PUT)
