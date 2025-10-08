@@ -1,6 +1,6 @@
 # AccessMapper
 
-_A concise description of what this Spring Boot microservice does._
+_This microservice serves as a bridge between the Active Directory service and internal systems, managing access mappings and translating Active Directory groups into corresponding internal access groups._
 
 ## Getting Started
 
@@ -42,9 +42,9 @@ _A concise description of what this Spring Boot microservice does._
 
 This microservice depends on the following services:
 
-- **Service Name**
-  - **Purpose:** Brief description of what the dependent service does.
-  - **Repository:** [Link to the repository](https://github.com/Sundsvallskommun/service_name)
+- **Active Directory**
+  - **Purpose:** API-service front for Active Directory. Allows the service to query user groups.
+  - **Documentation:** [Documentation on confluence](https://sundsvall.atlassian.net/wiki/spaces/SKA/pages/1199931472/ActiveDirectory)
   - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
 
 Ensure that these services are running and properly configured before starting this microservice.
@@ -66,7 +66,7 @@ Refer to the [API Documentation](#api-documentation) for detailed information on
 ### Example Request
 
 ```bash
-curl -X GET http://localhost:8080/api/resource
+curl -X GET http://localhost:8080/api/2281/mynamespace/access/ad/joe01doe
 ```
 
 ## Configuration
