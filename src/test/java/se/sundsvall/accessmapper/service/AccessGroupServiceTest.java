@@ -8,14 +8,21 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.zalando.problem.Status.CONFLICT;
 import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withAccessType;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withMunicipalityId;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withNamespace;
 
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 import org.zalando.problem.ThrowableProblem;
 import se.sundsvall.accessmapper.api.model.Access;
 import se.sundsvall.accessmapper.api.model.AccessGroup;
@@ -42,6 +49,9 @@ class AccessGroupServiceTest {
 
 	@InjectMocks
 	private AccessGroupService service;
+
+	@Captor
+	private ArgumentCaptor<Specification<AccessGroupEntity>> specificationCaptor;
 
 	@Test
 	void getAccessGroup() {
@@ -115,7 +125,7 @@ class AccessGroupServiceTest {
 					.withPattern("pattern")
 					.withAccessLevel(AccessLevel.LR.name())))));
 
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndAccessByType_Type(MUNICIPALITY_ID, NAMESPACE, TYPE))
+		when(accessGroupRepositoryMock.findAll(ArgumentMatchers.<Specification<AccessGroupEntity>>any()))
 			.thenReturn(List.of(entity1, entity2));
 
 		// Act
@@ -126,13 +136,14 @@ class AccessGroupServiceTest {
 		assertThat(response.getFirst().getGroup()).isEqualTo("group1");
 		assertThat(response.getLast().getGroup()).isEqualTo("group2");
 
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndAccessByType_Type(MUNICIPALITY_ID, NAMESPACE, TYPE);
+		verify(accessGroupRepositoryMock).findAll(specificationCaptor.capture());
+		assertThat(specificationCaptor.getValue()).usingRecursiveComparison().isEqualTo(withMunicipalityId(MUNICIPALITY_ID).and(withNamespace(NAMESPACE)).and(withAccessType(TYPE)));
 	}
 
 	@Test
 	void getAccessGroupsWithoutMatches() {
 
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndAccessByType_Type(MUNICIPALITY_ID, NAMESPACE, TYPE))
+		when(accessGroupRepositoryMock.findAll(ArgumentMatchers.<Specification<AccessGroupEntity>>any()))
 			.thenReturn(List.of());
 
 		// Act
@@ -141,7 +152,8 @@ class AccessGroupServiceTest {
 		// Assert
 		assertThat(response).isNotNull().isEmpty();
 
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndAccessByType_Type(MUNICIPALITY_ID, NAMESPACE, TYPE);
+		verify(accessGroupRepositoryMock).findAll(specificationCaptor.capture());
+		assertThat(specificationCaptor.getValue()).usingRecursiveComparison().isEqualTo(withMunicipalityId(MUNICIPALITY_ID).and(withNamespace(NAMESPACE)).and(withAccessType(TYPE)));
 	}
 
 	@Test

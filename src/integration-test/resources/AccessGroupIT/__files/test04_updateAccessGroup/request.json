@@ -1,0 +1,27 @@
+{
+	"accessByType": [
+		{
+			"access": [
+				{
+					"accessLevel": "RW",
+					"pattern": "RE/PLACED/NEW/PATTERN"
+				},
+				{
+					"accessLevel": "R",
+					"pattern": "PATT/ERN/THAT/IS/REPLACED"
+				}
+			],
+			"type": "label"
+		},
+		{
+			"access": [
+				{
+					"accessLevel": "LR",
+					"pattern": "SO/ME/NEW/PATTERN"
+				}
+			],
+			"type": "label"
+		}
+	],
+	"group": "22222222-2222-2222-2222-222222222222"
+}

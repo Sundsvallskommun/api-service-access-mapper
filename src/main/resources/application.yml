@@ -28,7 +28,6 @@ integration:
     connectTimeout: 5
     readTimeout: 30
 
-
 resilience4j:
   circuitbreaker:
     instances:

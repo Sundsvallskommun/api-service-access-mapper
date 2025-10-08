@@ -1,0 +1,27 @@
+{
+	"accessByType": [
+		{
+			"access": [
+				{
+					"accessLevel": "R",
+					"pattern": "FA/K1/T1"
+				},
+				{
+					"accessLevel": "LR",
+					"pattern": "FA/K2/**"
+				}
+			],
+			"type": "label"
+		},
+		{
+			"access": [
+				{
+					"accessLevel": "RW",
+					"pattern": "FA/**"
+				}
+			],
+			"type": "label"
+		}
+	],
+	"group": "11111111-1111-1111-1111-111111111111"
+}
