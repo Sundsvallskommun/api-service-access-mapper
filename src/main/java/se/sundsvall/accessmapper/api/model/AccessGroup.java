@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Schema(description = "Access group model")
 public class AccessGroup {
-	@Schema(description = "Access group", example = "G1")
+	@Schema(description = "Access group", examples = "G1")
 	private String group;
 	@Schema(description = "Access by type")
 	private List<AccessType> accessByType;
