@@ -5,9 +5,9 @@ import java.util.Objects;
 
 @Schema(description = "Access model")
 public class Access {
-	@Schema(description = "Access pattern", example = "FA/**")
+	@Schema(description = "Access pattern", examples = "FA/**")
 	private String pattern;
-	@Schema(description = "Access level", example = "LR")
+	@Schema(description = "Access level", examples = "LR")
 	private AccessLevel accessLevel;
 
 	public static Access create() {

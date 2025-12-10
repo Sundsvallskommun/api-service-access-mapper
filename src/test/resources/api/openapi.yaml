@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: access-mapper
   contact: { }
@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "1.0"
 servers:
-  - url: http://localhost:53531
+  - url: http://localhost:59799
     description: Generated server url
 tags:
   - name: Access Group
@@ -33,16 +33,16 @@ paths:
           description: Namespace
           required: true
           schema:
-            pattern: "[\\w|\\-]+"
             type: string
+            pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
         - name: groupId
           in: path
           description: Group ID
           required: true
           schema:
-            minLength: 1
             type: string
+            minLength: 1
           example: group123
       responses:
         "200":
@@ -88,16 +88,16 @@ paths:
           description: Namespace
           required: true
           schema:
-            pattern: "[\\w|\\-]+"
             type: string
+            pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
         - name: groupId
           in: path
           description: Group ID
           required: true
           schema:
-            minLength: 1
             type: string
+            minLength: 1
           example: group123
       requestBody:
         content:
@@ -145,16 +145,16 @@ paths:
           description: Namespace
           required: true
           schema:
-            pattern: "[\\w|\\-]+"
             type: string
+            pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
         - name: groupId
           in: path
           description: Group ID
           required: true
           schema:
-            minLength: 1
             type: string
+            minLength: 1
           example: group123
       requestBody:
         content:
@@ -206,16 +206,16 @@ paths:
           description: Namespace
           required: true
           schema:
-            pattern: "[\\w|\\-]+"
             type: string
+            pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
         - name: groupId
           in: path
           description: Group ID
           required: true
           schema:
-            minLength: 1
             type: string
+            minLength: 1
           example: group123
       responses:
         "204":
@@ -258,8 +258,8 @@ paths:
           description: Namespace
           required: true
           schema:
-            pattern: "[\\w|\\-]+"
             type: string
+            pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
         - name: adId
           in: path
@@ -322,8 +322,8 @@ paths:
           description: Namespace
           required: true
           schema:
-            pattern: "[\\w|\\-]+"
             type: string
+            pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
         - name: type
           in: query
@@ -375,46 +375,50 @@ components:
   schemas:
     Access:
       type: object
+      description: Access model
       properties:
         pattern:
           type: string
           description: Access pattern
-          example: FA/**
+          examples:
+            - FA/**
         accessLevel:
           type: string
           description: Access level
-          example: LR
           enum:
             - RW
             - R
             - LR
-      description: Access model
+          examples:
+            - LR
     AccessGroup:
       type: object
+      description: Access group model
       properties:
         group:
           type: string
           description: Access group
-          example: G1
+          examples:
+            - G1
         accessByType:
           type: array
           description: Access by type
           items:
             $ref: "#/components/schemas/AccessType"
-      description: Access group model
     AccessType:
       type: object
+      description: Access type model
       properties:
         type:
           type: string
           description: Access type
-          example: label
+          examples:
+            - label
         access:
           type: array
           description: Access by type
           items:
             $ref: "#/components/schemas/Access"
-      description: Access type model
     Problem:
       type: object
       properties:
@@ -432,8 +436,7 @@ components:
           format: uri
         parameters:
           type: object
-          additionalProperties:
-            type: object
+          additionalProperties: { }
     StatusType:
       type: object
       properties:
@@ -489,8 +492,7 @@ components:
           format: uri
         parameters:
           type: object
-          additionalProperties:
-            type: object
+          additionalProperties: { }
         suppressed:
           type: array
           items:
@@ -527,8 +529,7 @@ components:
     ThrowableProblem:
       type: object
       properties:
-        cause:
-          $ref: "#/components/schemas/ThrowableProblem"
+        cause: { }
         stackTrace:
           type: array
           items:
@@ -567,8 +568,7 @@ components:
           format: uri
         parameters:
           type: object
-          additionalProperties:
-            type: object
+          additionalProperties: { }
         suppressed:
           type: array
           items:

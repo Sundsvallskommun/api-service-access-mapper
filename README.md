@@ -1,12 +1,13 @@
 # AccessMapper
 
-_This microservice serves as a bridge between the Active Directory service and internal systems, managing access mappings and translating Active Directory groups into corresponding internal access groups._
+_This microservice serves as a bridge between the Active Directory service and internal systems, managing access
+mappings and translating Active Directory groups into corresponding internal access groups._
 
 ## Getting Started
 
 ### Prerequisites
 
-- **Java 21 or higher**
+- **Java 25 or higher**
 - **Maven**
 - **MariaDB**
 - **Git**
@@ -44,7 +45,8 @@ This microservice depends on the following services:
 
 - **Active Directory**
   - **Purpose:** API-service front for Active Directory. Allows the service to query user groups.
-  - **Documentation:** [Documentation on confluence](https://sundsvall.atlassian.net/wiki/spaces/SKA/pages/1199931472/ActiveDirectory)
+  - **Documentation:
+    ** [Documentation on confluence](https://sundsvall.atlassian.net/wiki/spaces/SKA/pages/1199931472/ActiveDirectory)
   - **Setup Instructions:** Refer to its documentation for installation and configuration steps.
 
 Ensure that these services are running and properly configured before starting this microservice.
