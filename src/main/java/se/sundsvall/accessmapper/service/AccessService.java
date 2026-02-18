@@ -1,7 +1,5 @@
 package se.sundsvall.accessmapper.service;
 
-import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroups;
-
 import generated.se.sundsvall.activedirectory.OUChildren;
 import java.util.List;
 import java.util.Objects;
@@ -9,6 +7,8 @@ import org.springframework.stereotype.Service;
 import se.sundsvall.accessmapper.api.model.AccessGroup;
 import se.sundsvall.accessmapper.integration.activedirectory.ActiveDirectoryClient;
 import se.sundsvall.accessmapper.integration.db.AccessGroupRepository;
+
+import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroups;
 
 @Service
 public class AccessService {

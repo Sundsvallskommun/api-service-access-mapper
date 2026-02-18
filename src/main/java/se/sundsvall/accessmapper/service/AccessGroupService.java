@@ -1,5 +1,13 @@
 package se.sundsvall.accessmapper.service;
 
+import java.util.List;
+import java.util.Optional;
+import org.springframework.stereotype.Service;
+import org.zalando.problem.Problem;
+import se.sundsvall.accessmapper.api.model.AccessGroup;
+import se.sundsvall.accessmapper.integration.db.AccessGroupRepository;
+import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
+
 import static org.zalando.problem.Status.CONFLICT;
 import static org.zalando.problem.Status.NOT_FOUND;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroup;
@@ -9,14 +17,6 @@ import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withAc
 import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withMunicipalityId;
 import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withNamespace;
 import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
-
-import java.util.List;
-import java.util.Optional;
-import org.springframework.stereotype.Service;
-import org.zalando.problem.Problem;
-import se.sundsvall.accessmapper.api.model.AccessGroup;
-import se.sundsvall.accessmapper.integration.db.AccessGroupRepository;
-import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
 
 @Service
 public class AccessGroupService {

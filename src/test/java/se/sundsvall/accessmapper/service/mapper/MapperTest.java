@@ -1,7 +1,5 @@
 package se.sundsvall.accessmapper.service.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -12,6 +10,8 @@ import se.sundsvall.accessmapper.api.model.AccessType;
 import se.sundsvall.accessmapper.integration.db.model.AccessEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessTypeEntity;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MapperTest {
 

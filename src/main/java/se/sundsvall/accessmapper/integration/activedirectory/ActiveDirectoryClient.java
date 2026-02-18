@@ -1,7 +1,5 @@
 package se.sundsvall.accessmapper.integration.activedirectory;
 
-import static se.sundsvall.accessmapper.integration.activedirectory.configuration.ActiveDirectoryConfiguration.CLIENT_ID;
-
 import generated.se.sundsvall.activedirectory.OUChildren;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
@@ -9,6 +7,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import se.sundsvall.accessmapper.integration.activedirectory.configuration.ActiveDirectoryConfiguration;
+
+import static se.sundsvall.accessmapper.integration.activedirectory.configuration.ActiveDirectoryConfiguration.CLIENT_ID;
 
 @FeignClient(name = CLIENT_ID, url = "${integration.active-directory.url}", configuration = ActiveDirectoryConfiguration.class)
 @CircuitBreaker(name = CLIENT_ID)
