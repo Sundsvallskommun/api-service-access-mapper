@@ -1,7 +1,5 @@
 package se.sundsvall.accessmapper.service.mapper;
 
-import static java.util.Collections.emptyList;
-
 import java.util.List;
 import java.util.Optional;
 import se.sundsvall.accessmapper.api.model.Access;
@@ -11,6 +9,8 @@ import se.sundsvall.accessmapper.api.model.AccessType;
 import se.sundsvall.accessmapper.integration.db.model.AccessEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessTypeEntity;
+
+import static java.util.Collections.emptyList;
 
 public final class Mapper {
 

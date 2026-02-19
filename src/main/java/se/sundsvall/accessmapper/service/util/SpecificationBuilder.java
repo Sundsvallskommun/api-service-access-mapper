@@ -1,9 +1,9 @@
 package se.sundsvall.accessmapper.service.util;
 
-import static java.util.Objects.nonNull;
-
 import org.springframework.data.jpa.domain.Specification;
 import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
+
+import static java.util.Objects.nonNull;
 
 public class SpecificationBuilder<T> {
 

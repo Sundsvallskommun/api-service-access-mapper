@@ -1,10 +1,5 @@
 package se.sundsvall.accessmapper.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
 import generated.se.sundsvall.activedirectory.OUChildren;
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +15,11 @@ import se.sundsvall.accessmapper.integration.db.AccessGroupRepository;
 import se.sundsvall.accessmapper.integration.db.model.AccessEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessTypeEntity;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AccessServiceTest {

@@ -1,17 +1,5 @@
 package se.sundsvall.accessmapper.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.zalando.problem.Status.CONFLICT;
-import static org.zalando.problem.Status.NOT_FOUND;
-import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withAccessType;
-import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withMunicipalityId;
-import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withNamespace;
-
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +20,18 @@ import se.sundsvall.accessmapper.integration.db.AccessGroupRepository;
 import se.sundsvall.accessmapper.integration.db.model.AccessEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessTypeEntity;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.zalando.problem.Status.CONFLICT;
+import static org.zalando.problem.Status.NOT_FOUND;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withAccessType;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withMunicipalityId;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withNamespace;
 
 @ExtendWith(MockitoExtension.class)
 class AccessGroupServiceTest {
