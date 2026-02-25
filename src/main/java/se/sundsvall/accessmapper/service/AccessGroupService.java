@@ -3,13 +3,13 @@ package se.sundsvall.accessmapper.service;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
-import org.zalando.problem.Problem;
 import se.sundsvall.accessmapper.api.model.AccessGroup;
 import se.sundsvall.accessmapper.integration.db.AccessGroupRepository;
 import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
+import se.sundsvall.dept44.problem.Problem;
 
-import static org.zalando.problem.Status.CONFLICT;
-import static org.zalando.problem.Status.NOT_FOUND;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroup;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroupEntity;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroups;
