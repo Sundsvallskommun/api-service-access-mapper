@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.zalando.problem.Problem;
-import org.zalando.problem.violations.ConstraintViolationProblem;
 import se.sundsvall.accessmapper.api.model.AccessGroup;
 import se.sundsvall.accessmapper.service.AccessGroupService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
+import se.sundsvall.dept44.problem.Problem;
+import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.ALL_VALUE;
@@ -38,7 +38,7 @@ import static se.sundsvall.accessmapper.Constants.NAMESPACE_VALIDATION_MESSAGE;
 
 @RestController
 @Validated
-@RequestMapping("/{municipalityId}/{namespace}/access-config/group")
+@RequestMapping(value = "/{municipalityId}/{namespace}/access-config/group", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "Access Group", description = "Access Group resources")
 @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
 	Problem.class, ConstraintViolationProblem.class
