@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "1.0"
 servers:
-- url: http://localhost:8080
+- url: http://localhost:49643
   description: Generated server url
 tags:
 - name: Access Group
@@ -42,6 +42,7 @@ paths:
         required: true
         schema:
           type: string
+          minLength: 1
         example: group123
       responses:
         "200":
@@ -96,6 +97,7 @@ paths:
         required: true
         schema:
           type: string
+          minLength: 1
         example: group123
       requestBody:
         content:
@@ -152,6 +154,7 @@ paths:
         required: true
         schema:
           type: string
+          minLength: 1
         example: group123
       requestBody:
         content:
@@ -206,6 +209,7 @@ paths:
         required: true
         schema:
           type: string
+          minLength: 1
         example: group123
       responses:
         "204":
@@ -440,10 +444,10 @@ components:
             $ref: "#/components/schemas/Violation"
         title:
           type: string
-        detail:
-          type: string
         causeAsProblem:
           $ref: "#/components/schemas/ThrowableProblem"
+        detail:
+          type: string
         instance:
           type: string
           format: uri
