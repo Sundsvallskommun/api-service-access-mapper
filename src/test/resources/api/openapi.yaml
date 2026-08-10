@@ -5,45 +5,211 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "1.0"
+  version: "1.1"
 servers:
-- url: http://localhost:49643
-  description: Generated server url
+  - url: http://localhost:64414
+    description: Generated server url
 tags:
-- name: Access Group
-  description: Access Group resources
-- name: Access configuration
-  description: Access configuration resources
+  - name: Access Group
+    description: Access Group resources
+  - name: Access User
+    description: Access User resources
+  - name: Access configuration
+    description: Access configuration resources
 paths:
+  /{municipalityId}/{namespace}/access-config/user/{id}:
+    get:
+      tags:
+        - Access User
+      operationId: getAccessUser
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+        - name: id
+          in: path
+          description: Access user ID
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          example: 81471222-5798-11e9-ae24-57fa13b361e1
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessUser"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    put:
+      tags:
+        - Access User
+      operationId: updateAccessUser
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+        - name: id
+          in: path
+          description: Access user ID
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          example: 81471222-5798-11e9-ae24-57fa13b361e1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccessUser"
+        required: true
+      responses:
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+    delete:
+      tags:
+        - Access User
+      operationId: deleteAccessUser
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+        - name: id
+          in: path
+          description: Access user ID
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          example: 81471222-5798-11e9-ae24-57fa13b361e1
+      responses:
+        "204":
+          description: No content - Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /{municipalityId}/{namespace}/access-config/group/{groupId}:
     get:
       tags:
-      - Access Group
+        - Access Group
       operationId: getAccessGroup
       parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality ID
-        required: true
-        schema:
-          type: string
-        example: 2281
-      - name: namespace
-        in: path
-        description: Namespace
-        required: true
-        schema:
-          type: string
-          pattern: "[\\w|\\-]+"
-        example: MY_NAMESPACE
-      - name: groupId
-        in: path
-        description: Group ID
-        required: true
-        schema:
-          type: string
-          minLength: 1
-        example: group123
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+        - name: groupId
+          in: path
+          description: Group ID
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          example: group123
       responses:
         "200":
           description: Successful operation
@@ -63,8 +229,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server error
           content:
@@ -73,32 +239,32 @@ paths:
                 $ref: "#/components/schemas/Problem"
     put:
       tags:
-      - Access Group
+        - Access Group
       operationId: updateAccessGroup
       parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality ID
-        required: true
-        schema:
-          type: string
-        example: 2281
-      - name: namespace
-        in: path
-        description: Namespace
-        required: true
-        schema:
-          type: string
-          pattern: "[\\w|\\-]+"
-        example: MY_NAMESPACE
-      - name: groupId
-        in: path
-        description: Group ID
-        required: true
-        schema:
-          type: string
-          minLength: 1
-        example: group123
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+        - name: groupId
+          in: path
+          description: Group ID
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          example: group123
       requestBody:
         content:
           application/json:
@@ -120,8 +286,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server error
           content:
@@ -130,32 +296,32 @@ paths:
                 $ref: "#/components/schemas/Problem"
     post:
       tags:
-      - Access Group
+        - Access Group
       operationId: createAccessGroup
       parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality ID
-        required: true
-        schema:
-          type: string
-        example: 2281
-      - name: namespace
-        in: path
-        description: Namespace
-        required: true
-        schema:
-          type: string
-          pattern: "[\\w|\\-]+"
-        example: MY_NAMESPACE
-      - name: groupId
-        in: path
-        description: Group ID
-        required: true
-        schema:
-          type: string
-          minLength: 1
-        example: group123
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+        - name: groupId
+          in: path
+          description: Group ID
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          example: group123
       requestBody:
         content:
           application/json:
@@ -169,8 +335,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server error
           content:
@@ -185,32 +351,32 @@ paths:
                 $ref: "#/components/schemas/AccessGroup"
     delete:
       tags:
-      - Access Group
+        - Access Group
       operationId: deleteAccessGroup
       parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality ID
-        required: true
-        schema:
-          type: string
-        example: 2281
-      - name: namespace
-        in: path
-        description: Namespace
-        required: true
-        schema:
-          type: string
-          pattern: "[\\w|\\-]+"
-        example: MY_NAMESPACE
-      - name: groupId
-        in: path
-        description: Group ID
-        required: true
-        schema:
-          type: string
-          minLength: 1
-        example: group123
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+        - name: groupId
+          in: path
+          description: Group ID
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          example: group123
       responses:
         "204":
           description: No content - Successful operation
@@ -226,49 +392,136 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+  /{municipalityId}/{namespace}/access-config/user:
+    get:
+      tags:
+        - Access User
+      operationId: getAccessUsers
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+      responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccessUser"
+    post:
+      tags:
+        - Access User
+      operationId: createAccessUser
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccessUser"
+        required: true
+      responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "201":
+          description: Successfully created
   /{municipalityId}/{namespace}/access/ad/{adId}:
     get:
       tags:
-      - Access configuration
+        - Access configuration
       operationId: getAccessDetails
       parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality ID
-        required: true
-        schema:
-          type: string
-        example: 2281
-      - name: namespace
-        in: path
-        description: Namespace
-        required: true
-        schema:
-          type: string
-          pattern: "[\\w|\\-]+"
-        example: MY_NAMESPACE
-      - name: adId
-        in: path
-        description: AdId for the user to get details about
-        required: true
-        schema:
-          type: string
-        example: joe01doe
-      - name: type
-        in: query
-        description: Filter type
-        required: false
-        schema:
-          type: string
-        example: label
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+        - name: adId
+          in: path
+          description: AdId for the user to get details about
+          required: true
+          schema:
+            type: string
+          example: joe01doe
+        - name: type
+          in: query
+          description: Filter type
+          required: false
+          schema:
+            type: string
+          example: label
       responses:
         "200":
           description: Successful operation
@@ -290,8 +543,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server error
           content:
@@ -301,31 +554,31 @@ paths:
   /{municipalityId}/{namespace}/access-config/group:
     get:
       tags:
-      - Access Group
+        - Access Group
       operationId: getAccessGroups
       parameters:
-      - name: municipalityId
-        in: path
-        description: Municipality ID
-        required: true
-        schema:
-          type: string
-        example: 2281
-      - name: namespace
-        in: path
-        description: Namespace
-        required: true
-        schema:
-          type: string
-          pattern: "[\\w|\\-]+"
-        example: MY_NAMESPACE
-      - name: type
-        in: query
-        description: Filter type
-        required: false
-        schema:
-          type: string
-        example: label
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+        - name: type
+          in: query
+          description: Filter type
+          required: false
+          schema:
+            type: string
+          example: label
       responses:
         "400":
           description: Bad request
@@ -333,8 +586,8 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                - $ref: "#/components/schemas/Problem"
-                - $ref: "#/components/schemas/ConstraintViolationProblem"
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "500":
           description: Internal Server error
           content:
@@ -352,7 +605,7 @@ paths:
   /api-docs:
     get:
       tags:
-      - API
+        - API
       summary: OpenAPI
       operationId: getApiDocs
       responses:
@@ -375,30 +628,16 @@ components:
           type: string
           description: Access pattern
           examples:
-          - FA/**
+            - FA/**
         accessLevel:
           type: string
           description: Access level
           enum:
-          - RW
-          - R
-          - LR
+            - RW
+            - R
+            - LR
           examples:
-          - LR
-    AccessGroup:
-      type: object
-      description: Access group model
-      properties:
-        group:
-          type: string
-          description: Access group
-          examples:
-          - G1
-        accessByType:
-          type: array
-          description: Access by type
-          items:
-            $ref: "#/components/schemas/AccessType"
+            - LR
     AccessType:
       type: object
       description: Access type model
@@ -407,25 +646,43 @@ components:
           type: string
           description: Access type
           examples:
-          - label
+            - label
         access:
           type: array
           description: Access by type
           items:
             $ref: "#/components/schemas/Access"
+    AccessUser:
+      type: object
+      description: Access user model
+      properties:
+        id:
+          type: string
+          description: Access user ID
+          example: 81471222-5798-11e9-ae24-57fa13b361e1
+          readOnly: true
+        userId:
+          type: string
+          description: User identifier
+          example: joe01doe
+        accessByType:
+          type: array
+          description: Access by type
+          items:
+            $ref: "#/components/schemas/AccessType"
     Problem:
       type: object
       properties:
-        title:
-          type: string
-        detail:
-          type: string
         instance:
           type: string
           format: uri
         type:
           type: string
           format: uri
+        title:
+          type: string
+        detail:
+          type: string
         status:
           type: integer
           format: int32
@@ -444,13 +701,13 @@ components:
             $ref: "#/components/schemas/Violation"
         title:
           type: string
-        causeAsProblem:
-          $ref: "#/components/schemas/ThrowableProblem"
-        detail:
-          type: string
         instance:
           type: string
           format: uri
+        detail:
+          type: string
+        causeAsProblem:
+          $ref: "#/components/schemas/ThrowableProblem"
     ThrowableProblem:
       type: object
       properties:
@@ -475,4 +732,18 @@ components:
           type: string
         message:
           type: string
+    AccessGroup:
+      type: object
+      description: Access group model
+      properties:
+        group:
+          type: string
+          description: Access group
+          examples:
+            - G1
+        accessByType:
+          type: array
+          description: Access by type
+          items:
+            $ref: "#/components/schemas/AccessType"
   securitySchemes: {}
