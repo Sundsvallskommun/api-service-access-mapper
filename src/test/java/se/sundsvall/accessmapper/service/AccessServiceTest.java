@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.accessmapper.api.model.AccessLevel;
 import se.sundsvall.accessmapper.integration.activedirectory.ActiveDirectoryClient;
 import se.sundsvall.accessmapper.integration.db.AccessGroupRepository;
+import se.sundsvall.accessmapper.integration.db.AccessUserRepository;
 import se.sundsvall.accessmapper.integration.db.model.AccessEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessTypeEntity;
@@ -39,6 +40,9 @@ class AccessServiceTest {
 
 	@Mock
 	private AccessGroupRepository accessGroupRepositoryMock;
+
+	@Mock
+	private AccessUserRepository accessUserRepositoryMock;
 
 	@InjectMocks
 	private AccessService service;
@@ -93,6 +97,7 @@ class AccessServiceTest {
 		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
 		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid1.toString());
 		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid2.toString());
+		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespaceAndUserId(MUNICIPALITY_ID, NAMESPACE, AD_ID);
 	}
 
 	@Test
@@ -127,6 +132,7 @@ class AccessServiceTest {
 
 		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
 		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid.toString());
+		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespaceAndUserId(MUNICIPALITY_ID, NAMESPACE, AD_ID);
 	}
 
 	@Test
@@ -178,6 +184,7 @@ class AccessServiceTest {
 		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
 		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid1.toString());
 		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid2.toString());
+		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespaceAndUserId(MUNICIPALITY_ID, NAMESPACE, AD_ID);
 	}
 
 	@Test
@@ -193,10 +200,11 @@ class AccessServiceTest {
 		assertThat(response).isNotNull().isEmpty();
 
 		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
+		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespaceAndUserId(MUNICIPALITY_ID, NAMESPACE, AD_ID);
 	}
 
 	@AfterEach
 	void verifyNoMoreInteractionsOnMocks() {
-		verifyNoMoreInteractions(activeDirectoryClientMock, accessGroupRepositoryMock);
+		verifyNoMoreInteractions(activeDirectoryClientMock, accessGroupRepositoryMock, accessUserRepositoryMock);
 	}
 }

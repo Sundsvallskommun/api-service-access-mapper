@@ -6,9 +6,11 @@ import se.sundsvall.accessmapper.api.model.Access;
 import se.sundsvall.accessmapper.api.model.AccessGroup;
 import se.sundsvall.accessmapper.api.model.AccessLevel;
 import se.sundsvall.accessmapper.api.model.AccessType;
+import se.sundsvall.accessmapper.api.model.AccessUser;
 import se.sundsvall.accessmapper.integration.db.model.AccessEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessTypeEntity;
+import se.sundsvall.accessmapper.integration.db.model.AccessUserEntity;
 
 import static java.util.Collections.emptyList;
 
@@ -76,4 +78,34 @@ public final class Mapper {
 			.withPattern(access.getPattern());
 	}
 
+	public static List<AccessUser> toAccessUsers(final List<AccessUserEntity> entities) {
+		return Optional.ofNullable(entities).orElse(emptyList()).stream().map(Mapper::toAccessUser).toList();
+	}
+
+	public static AccessUser toAccessUser(final AccessUserEntity entity) {
+		return AccessUser.create()
+			.withId(entity.getId())
+			.withUserId(entity.getUserId())
+			.withAccessByType(toAccessTypes(entity.getAccessByType()));
+	}
+
+	public static AccessUserEntity toAccessUserEntity(final String municipalityId, final String namespace, final AccessUser accessUser) {
+		return AccessUserEntity.create()
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
+			.withUserId(accessUser.getUserId())
+			.withAccessByType(toAccessTypeEntities(accessUser.getAccessByType()));
+	}
+
+	public static void updateAccessUserEntity(final AccessUserEntity entity, final AccessUser accessUser) {
+		entity.setUserId(accessUser.getUserId());
+		entity.getAccessByType().clear();
+		entity.getAccessByType().addAll(toAccessTypeEntities(accessUser.getAccessByType()));
+	}
+
+	public static AccessGroup toAccessGroupFromUser(final AccessUserEntity entity) {
+		return AccessGroup.create()
+			.withAccessByType(toAccessTypes(entity.getAccessByType()))
+			.withGroup(entity.getUserId());
+	}
 }

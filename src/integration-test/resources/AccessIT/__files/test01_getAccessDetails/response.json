@@ -39,5 +39,19 @@
 			}
 		],
 		"group": "22222222-2222-2222-2222-222222222222"
+	},
+	{
+		"accessByType": [
+			{
+				"access": [
+					{
+						"accessLevel": "RW",
+						"pattern": "USER/**"
+					}
+				],
+				"type": "label"
+			}
+		],
+		"group": "joe01doe"
 	}
 ]
