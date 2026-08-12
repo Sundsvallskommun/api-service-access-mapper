@@ -35,6 +35,7 @@ public class AccessService {
 			.map(OUChildren::getGuid)
 			.filter(Objects::nonNull)
 			.map(guid -> accessGroupRepository.findByMunicipalityIdAndNamespaceAndId(municipalityId, namespace, guid.toString()))
+			.filter(Objects::nonNull)
 			.filter(accessGroup -> type == null || accessGroup.getAccessByType().stream()
 				.anyMatch(accessType -> type.equals(accessType.getType())))
 			.toList();
