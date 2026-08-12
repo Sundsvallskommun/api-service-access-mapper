@@ -2,6 +2,7 @@ package se.sundsvall.accessmapper.service.mapper;
 
 import java.util.List;
 import java.util.Optional;
+import se.sundsvall.accessmapper.Constants;
 import se.sundsvall.accessmapper.api.model.Access;
 import se.sundsvall.accessmapper.api.model.AccessGroup;
 import se.sundsvall.accessmapper.api.model.AccessLevel;
@@ -106,6 +107,6 @@ public final class Mapper {
 	public static AccessGroup toAccessGroupFromUser(final AccessUserEntity entity) {
 		return AccessGroup.create()
 			.withAccessByType(toAccessTypes(entity.getAccessByType()))
-			.withGroup(entity.getUserId());
+			.withGroup(Constants.LOCAL_STORED_ACCESS_GROUP);
 	}
 }
