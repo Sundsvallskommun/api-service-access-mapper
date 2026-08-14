@@ -1,5 +1,6 @@
 package se.sundsvall.accessmapper.integration.activedirectory.configuration;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -63,7 +64,9 @@ class ActiveDirectoryConfigurationTest {
 			verify(feignMultiCustomizerSpy).withRequestTimeoutsInSeconds(1, 2);
 			verify(feignMultiCustomizerSpy).composeCustomizersToOne();
 
-			assertThat(errorDecoderCaptor.getValue()).hasFieldOrPropertyWithValue("integrationName", CLIENT_ID);
+			assertThat(errorDecoderCaptor.getValue())
+				.hasFieldOrPropertyWithValue("integrationName", CLIENT_ID)
+				.hasFieldOrPropertyWithValue("bypassResponseCodes", List.of(404));
 			assertThat(customizer).isSameAs(feignBuilderCustomizerMock);
 		}
 	}
