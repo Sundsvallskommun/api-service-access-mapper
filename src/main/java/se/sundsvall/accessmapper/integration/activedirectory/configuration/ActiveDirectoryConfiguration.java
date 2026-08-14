@@ -1,5 +1,6 @@
 package se.sundsvall.accessmapper.integration.activedirectory.configuration;
 
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -16,7 +17,7 @@ public class ActiveDirectoryConfiguration {
 	@Bean
 	FeignBuilderCustomizer feignBuilderCustomizer(final ActiveDirectoryProperties activeDirectoryProperties, final ClientRegistrationRepository clientRegistrationRepository) {
 		return FeignMultiCustomizer.create()
-			.withErrorDecoder(new ProblemErrorDecoder(CLIENT_ID))
+			.withErrorDecoder(new ProblemErrorDecoder(CLIENT_ID, List.of(404)))
 			.withRequestTimeoutsInSeconds(activeDirectoryProperties.connectTimeout(), activeDirectoryProperties.readTimeout())
 			.withRetryableOAuth2InterceptorForClientRegistration(clientRegistrationRepository.findByRegistrationId(CLIENT_ID))
 			.composeCustomizersToOne();

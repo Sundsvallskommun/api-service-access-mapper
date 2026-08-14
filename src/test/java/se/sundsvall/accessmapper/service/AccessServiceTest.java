@@ -16,11 +16,17 @@ import se.sundsvall.accessmapper.integration.db.AccessUserRepository;
 import se.sundsvall.accessmapper.integration.db.model.AccessEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessTypeEntity;
+import se.sundsvall.dept44.exception.ClientProblem;
+import se.sundsvall.dept44.exception.ServerProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ExtendWith(MockitoExtension.class)
 class AccessServiceTest {
@@ -201,6 +207,37 @@ class AccessServiceTest {
 
 		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
 		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespaceAndUserId(MUNICIPALITY_ID, NAMESPACE, AD_ID);
+	}
+
+	@Test
+	void getAccessDetailsWhenAdUserNotFound() {
+		// Arrange
+		when(activeDirectoryClientMock.getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID))
+			.thenThrow(new ClientProblem(NOT_FOUND, "Not Found"));
+
+		// Act
+		final var response = service.getAccessDetails(MUNICIPALITY_ID, NAMESPACE, AD_ID, TYPE);
+
+		// Assert
+		assertThat(response).isNotNull().isEmpty();
+
+		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
+		verifyNoInteractions(accessGroupRepositoryMock, accessUserRepositoryMock);
+	}
+
+	@Test
+	void getAccessDetailsWhenAdThrowsNonNotFound() {
+		// Arrange
+		final var problem = new ServerProblem(INTERNAL_SERVER_ERROR, "Something went wrong");
+		when(activeDirectoryClientMock.getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID))
+			.thenThrow(problem);
+
+		// Act & Assert
+		assertThatThrownBy(() -> service.getAccessDetails(MUNICIPALITY_ID, NAMESPACE, AD_ID, TYPE))
+			.isSameAs(problem);
+
+		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
+		verifyNoInteractions(accessGroupRepositoryMock, accessUserRepositoryMock);
 	}
 
 	@AfterEach
