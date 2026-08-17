@@ -222,7 +222,8 @@ class AccessServiceTest {
 		assertThat(response).isNotNull().isEmpty();
 
 		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
-		verifyNoInteractions(accessGroupRepositoryMock, accessUserRepositoryMock);
+		verifyNoInteractions(accessGroupRepositoryMock);
+		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespaceAndUserId(MUNICIPALITY_ID, NAMESPACE, AD_ID);
 	}
 
 	@Test

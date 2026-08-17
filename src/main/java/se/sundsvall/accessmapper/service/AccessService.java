@@ -33,14 +33,15 @@ public class AccessService {
 
 	public List<AccessGroup> getAccessDetails(final String municipalityId, final String namespace, final String adId, final String type) {
 
-		final List<OUChildren> adGroups;
+		List<OUChildren> adGroups;
 		try {
 			adGroups = activeDirectoryClient.getGroupsForUser(municipalityId, DOMAIN, adId);
 		} catch (final ThrowableProblem e) {
 			if (NOT_FOUND == e.getStatus()) {
-				return Collections.emptyList();
+				adGroups = Collections.emptyList();
+			} else {
+				throw e;
 			}
-			throw e;
 		}
 
 		final var accessGroups = adGroups.stream()
