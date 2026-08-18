@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -14,9 +15,12 @@ import java.util.Objects;
 import org.hibernate.annotations.UuidGenerator;
 
 @Entity
-@Table(name = "access_group", uniqueConstraints = @UniqueConstraint(name = "uk_municipality_id_namespace_group_id", columnNames = {
+@Table(name = "access_group", uniqueConstraints = @UniqueConstraint(name = "uq_municipality_id_namespace_group_id", columnNames = {
 	"municipality_id", "namespace", "group_id"
-}))
+}), indexes = {
+	@Index(name = "idx_id_group_id", columnList = "id, group_id"),
+	@Index(name = "idx_municipality_id_namespace_group_id", columnList = "municipality_id, namespace, group_id")
+})
 public class AccessGroupEntity {
 
 	@Id
@@ -30,7 +34,7 @@ public class AccessGroupEntity {
 	@Column(name = "namespace")
 	private String namespace;
 
-	@Column(name = "group_id")
+	@Column(name = "group_id", length = 36)
 	private String groupId;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
