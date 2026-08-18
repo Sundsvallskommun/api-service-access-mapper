@@ -26,7 +26,7 @@ public final class Mapper {
 	public static AccessGroup toAccessGroup(final AccessGroupEntity entity) {
 		return AccessGroup.create()
 			.withAccessByType(toAccessTypes(entity.getAccessByType()))
-			.withGroup(entity.getId());
+			.withGroup(entity.getGroupId());
 	}
 
 	public static List<AccessType> toAccessTypes(final List<AccessTypeEntity> entityList) {
@@ -53,7 +53,7 @@ public final class Mapper {
 		return AccessGroupEntity.create()
 			.withNamespace(namespace)
 			.withMunicipalityId(municipalityId)
-			.withId(groupId)
+			.withGroupId(groupId)
 			.withAccessByType(toAccessTypeEntities(accessGroup.getAccessByType()));
 
 	}

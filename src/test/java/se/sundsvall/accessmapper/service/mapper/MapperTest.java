@@ -25,7 +25,7 @@ class MapperTest {
 	void toAccessGroups() {
 		// Arrange
 		final var entity1 = AccessGroupEntity.create()
-			.withId("group1")
+			.withGroupId("group1")
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity.create()
@@ -35,7 +35,7 @@ class MapperTest {
 					.withAccessLevel(AccessLevel.LR.name())))));
 
 		final var entity2 = AccessGroupEntity.create()
-			.withId("group2")
+			.withGroupId("group2")
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity.create()
@@ -75,7 +75,7 @@ class MapperTest {
 	void toAccessGroup() {
 		// Arrange
 		final var entity = AccessGroupEntity.create()
-			.withId(GROUP_ID)
+			.withGroupId(GROUP_ID)
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity.create()
@@ -98,7 +98,7 @@ class MapperTest {
 	void toAccessGroupWithNullAccessByType() {
 		// Arrange
 		final var entity = AccessGroupEntity.create()
-			.withId(GROUP_ID)
+			.withGroupId(GROUP_ID)
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(null);
@@ -279,7 +279,7 @@ class MapperTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		assertThat(response.getId()).isEqualTo(GROUP_ID);
+		assertThat(response.getGroupId()).isEqualTo(GROUP_ID);
 		assertThat(response.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(response.getNamespace()).isEqualTo(NAMESPACE);
 		assertThat(response.getAccessByType()).hasSize(1);
@@ -301,7 +301,7 @@ class MapperTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		assertThat(response.getId()).isEqualTo(GROUP_ID);
+		assertThat(response.getGroupId()).isEqualTo(GROUP_ID);
 		assertThat(response.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(response.getNamespace()).isEqualTo(NAMESPACE);
 		assertThat(response.getAccessByType()).isNotNull().isEmpty();
@@ -319,7 +319,7 @@ class MapperTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		assertThat(response.getId()).isEqualTo(GROUP_ID);
+		assertThat(response.getGroupId()).isEqualTo(GROUP_ID);
 		assertThat(response.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(response.getNamespace()).isEqualTo(NAMESPACE);
 		assertThat(response.getAccessByType()).isNotNull().isEmpty();
@@ -371,7 +371,7 @@ class MapperTest {
 	void toAccessGroupEntityRoundTrip() {
 		// Arrange
 		final var originalEntity = AccessGroupEntity.create()
-			.withId(GROUP_ID)
+			.withGroupId(GROUP_ID)
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity.create()
@@ -386,7 +386,7 @@ class MapperTest {
 
 		// Assert
 		assertThat(resultEntity).isNotNull();
-		assertThat(resultEntity.getId()).isEqualTo(originalEntity.getId());
+		assertThat(resultEntity.getGroupId()).isEqualTo(originalEntity.getGroupId());
 		assertThat(resultEntity.getMunicipalityId()).isEqualTo(originalEntity.getMunicipalityId());
 		assertThat(resultEntity.getNamespace()).isEqualTo(originalEntity.getNamespace());
 		assertThat(resultEntity.getAccessByType()).hasSize(1);
@@ -400,7 +400,7 @@ class MapperTest {
 	void toAccessGroupWithComplexStructure() {
 		// Arrange
 		final var entity = AccessGroupEntity.create()
-			.withId(GROUP_ID)
+			.withGroupId(GROUP_ID)
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(
@@ -460,7 +460,7 @@ class MapperTest {
 
 		// Assert
 		assertThat(response).isNotNull();
-		assertThat(response.getId()).isEqualTo(GROUP_ID);
+		assertThat(response.getGroupId()).isEqualTo(GROUP_ID);
 		assertThat(response.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(response.getNamespace()).isEqualTo(NAMESPACE);
 		assertThat(response.getAccessByType()).hasSize(2);

@@ -62,7 +62,7 @@ class AccessServiceTest {
 		final var ouChild2 = new OUChildren().guid(guid2);
 
 		final var entity1 = AccessGroupEntity.create()
-			.withId(guid1.toString())
+			.withGroupId(guid1.toString())
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity
@@ -74,7 +74,7 @@ class AccessServiceTest {
 					.withAccessLevel(AccessLevel.LR.name())))));
 
 		final var entity2 = AccessGroupEntity.create()
-			.withId(guid2.toString())
+			.withGroupId(guid2.toString())
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity
@@ -87,9 +87,9 @@ class AccessServiceTest {
 
 		when(activeDirectoryClientMock.getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID))
 			.thenReturn(List.of(ouChild1, ouChild2));
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid1.toString()))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid1.toString()))
 			.thenReturn(entity1);
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid2.toString()))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid2.toString()))
 			.thenReturn(entity2);
 
 		// Act
@@ -101,8 +101,8 @@ class AccessServiceTest {
 		assertThat(response.getLast().getGroup()).isEqualTo(guid2.toString());
 
 		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid1.toString());
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid2.toString());
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid1.toString());
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid2.toString());
 		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespaceAndUserId(MUNICIPALITY_ID, NAMESPACE, AD_ID);
 	}
 
@@ -113,7 +113,7 @@ class AccessServiceTest {
 		final var ouChild = new OUChildren().guid(guid);
 
 		final var entity = AccessGroupEntity.create()
-			.withId(guid.toString())
+			.withGroupId(guid.toString())
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity
@@ -126,7 +126,7 @@ class AccessServiceTest {
 
 		when(activeDirectoryClientMock.getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID))
 			.thenReturn(List.of(ouChild));
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid.toString()))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid.toString()))
 			.thenReturn(entity);
 
 		// Act
@@ -137,7 +137,7 @@ class AccessServiceTest {
 		assertThat(response.getFirst().getGroup()).isEqualTo(guid.toString());
 
 		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid.toString());
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid.toString());
 		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespaceAndUserId(MUNICIPALITY_ID, NAMESPACE, AD_ID);
 	}
 
@@ -150,7 +150,7 @@ class AccessServiceTest {
 		final var ouChild2 = new OUChildren().guid(guid2);
 
 		final var entity1 = AccessGroupEntity.create()
-			.withId(guid1.toString())
+			.withGroupId(guid1.toString())
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity
@@ -162,7 +162,7 @@ class AccessServiceTest {
 					.withAccessLevel(AccessLevel.LR.name())))));
 
 		final var entity2 = AccessGroupEntity.create()
-			.withId(guid2.toString())
+			.withGroupId(guid2.toString())
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity
@@ -175,9 +175,9 @@ class AccessServiceTest {
 
 		when(activeDirectoryClientMock.getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID))
 			.thenReturn(List.of(ouChild1, ouChild2));
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid1.toString()))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid1.toString()))
 			.thenReturn(entity1);
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid2.toString()))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid2.toString()))
 			.thenReturn(entity2);
 
 		// Act
@@ -188,8 +188,8 @@ class AccessServiceTest {
 		assertThat(response.getFirst().getGroup()).isEqualTo(guid1.toString());
 
 		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid1.toString());
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, guid2.toString());
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid1.toString());
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid2.toString());
 		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespaceAndUserId(MUNICIPALITY_ID, NAMESPACE, AD_ID);
 	}
 
