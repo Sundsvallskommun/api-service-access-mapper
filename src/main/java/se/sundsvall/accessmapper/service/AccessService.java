@@ -47,7 +47,7 @@ public class AccessService {
 		final var accessGroups = adGroups.stream()
 			.map(OUChildren::getGuid)
 			.filter(Objects::nonNull)
-			.map(guid -> accessGroupRepository.findByMunicipalityIdAndNamespaceAndId(municipalityId, namespace, guid.toString()))
+			.map(guid -> accessGroupRepository.findByMunicipalityIdAndNamespaceAndGroupId(municipalityId, namespace, guid.toString()))
 			.filter(Objects::nonNull)
 			.filter(accessGroup -> type == null || accessGroup.getAccessByType().stream()
 				.anyMatch(accessType -> type.equals(accessType.getType())))

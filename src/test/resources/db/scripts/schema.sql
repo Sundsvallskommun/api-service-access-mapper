@@ -8,6 +8,7 @@
     ) engine=InnoDB;
 
     create table access_group (
+        group_id varchar(255),
         id varchar(255) not null,
         municipality_id varchar(255),
         namespace varchar(255),
@@ -29,6 +30,9 @@
         user_id varchar(255),
         primary key (id)
     ) engine=InnoDB;
+
+    alter table if exists access_group
+       add constraint uk_municipality_id_namespace_group_id unique (municipality_id, namespace, group_id);
 
     alter table if exists access
        add constraint fk_access_type_id
