@@ -97,8 +97,8 @@ class AccessServiceTest {
 
 		// Assert
 		assertThat(response).isNotNull().hasSize(2);
-		assertThat(response.getFirst().getGroup()).isEqualTo(guid1.toString());
-		assertThat(response.getLast().getGroup()).isEqualTo(guid2.toString());
+		assertThat(response.getFirst().getGroupId()).isEqualTo(guid1.toString());
+		assertThat(response.getLast().getGroupId()).isEqualTo(guid2.toString());
 
 		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
 		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid1.toString());
@@ -134,7 +134,7 @@ class AccessServiceTest {
 
 		// Assert
 		assertThat(response).isNotNull().hasSize(1);
-		assertThat(response.getFirst().getGroup()).isEqualTo(guid.toString());
+		assertThat(response.getFirst().getGroupId()).isEqualTo(guid.toString());
 
 		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
 		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid.toString());
@@ -185,7 +185,7 @@ class AccessServiceTest {
 
 		// Assert
 		assertThat(response).isNotNull().hasSize(1);
-		assertThat(response.getFirst().getGroup()).isEqualTo(guid1.toString());
+		assertThat(response.getFirst().getGroupId()).isEqualTo(guid1.toString());
 
 		verify(activeDirectoryClientMock).getGroupsForUser(MUNICIPALITY_ID, DOMAIN, AD_ID);
 		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, guid1.toString());

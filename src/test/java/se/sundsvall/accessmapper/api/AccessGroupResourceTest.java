@@ -32,7 +32,7 @@ class AccessGroupResourceTest {
 
 	private static final String MUNICIPALITY_ID = "2281";
 
-	private static final String GROUP_ID = "group123";
+	private static final String ID = "550e8400-e29b-41d4-a716-446655440000";
 
 	private static final String PATH = "/{municipalityId}/{namespace}/access-config/group";
 
@@ -91,10 +91,10 @@ class AccessGroupResourceTest {
 		// Arrange
 		final var accessGroup = new AccessGroup();
 
-		when(accessGroupServiceMock.getAccessGroup(MUNICIPALITY_ID, NAMESPACE, GROUP_ID)).thenReturn(accessGroup);
+		when(accessGroupServiceMock.getAccessGroup(MUNICIPALITY_ID, NAMESPACE, ID)).thenReturn(accessGroup);
 
-		final var response = webTestClient.get().uri(builder -> builder.path(PATH.concat("/{groupId}"))
-			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "groupId", GROUP_ID)))
+		final var response = webTestClient.get().uri(builder -> builder.path(PATH.concat("/{id}"))
+			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "id", ID)))
 			.accept(APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isOk()
@@ -105,7 +105,7 @@ class AccessGroupResourceTest {
 		assertThat(response.getResponseBody()).isEqualTo(accessGroup);
 
 		// Assert
-		verify(accessGroupServiceMock).getAccessGroup(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		verify(accessGroupServiceMock).getAccessGroup(MUNICIPALITY_ID, NAMESPACE, ID);
 	}
 
 	@Test
@@ -114,19 +114,19 @@ class AccessGroupResourceTest {
 		final var accessGroup = new AccessGroup();
 
 		// Act
-		webTestClient.post().uri(builder -> builder.path(PATH.concat("/{groupId}"))
-			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "groupId", GROUP_ID)))
+		webTestClient.post().uri(builder -> builder.path(PATH)
+			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
 			.contentType(APPLICATION_JSON)
 			.accept(ALL)
 			.bodyValue(accessGroup)
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(ALL)
-			.expectHeader().location("/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/access-config/group/" + GROUP_ID)
+			.expectHeader().location("/" + MUNICIPALITY_ID + "/" + NAMESPACE + "/access-config/group")
 			.expectBody().isEmpty();
 
 		// Assert
-		verify(accessGroupServiceMock).createAccessGroup(eq(MUNICIPALITY_ID), eq(NAMESPACE), eq(GROUP_ID), any(AccessGroup.class));
+		verify(accessGroupServiceMock).createAccessGroup(eq(MUNICIPALITY_ID), eq(NAMESPACE), any(AccessGroup.class));
 	}
 
 	@Test
@@ -135,8 +135,8 @@ class AccessGroupResourceTest {
 		final var accessGroup = new AccessGroup();
 
 		// Act
-		webTestClient.put().uri(builder -> builder.path(PATH.concat("/{groupId}"))
-			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "groupId", GROUP_ID)))
+		webTestClient.put().uri(builder -> builder.path(PATH.concat("/{id}"))
+			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "id", ID)))
 			.contentType(APPLICATION_JSON)
 			.accept(ALL)
 			.bodyValue(accessGroup)
@@ -146,18 +146,18 @@ class AccessGroupResourceTest {
 			.expectBody().isEmpty();
 
 		// Assert
-		verify(accessGroupServiceMock).updateAccessGroup(eq(MUNICIPALITY_ID), eq(NAMESPACE), eq(GROUP_ID), any(AccessGroup.class));
+		verify(accessGroupServiceMock).updateAccessGroup(eq(MUNICIPALITY_ID), eq(NAMESPACE), eq(ID), any(AccessGroup.class));
 	}
 
 	@Test
 	void deleteAccessGroup() {
-		webTestClient.delete().uri(builder -> builder.path(PATH.concat("/{groupId}"))
-			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "groupId", GROUP_ID)))
+		webTestClient.delete().uri(builder -> builder.path(PATH.concat("/{id}"))
+			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE, "id", ID)))
 			.exchange()
 			.expectStatus().isNoContent()
 			.expectHeader().contentType(ALL_VALUE);
 
 		// Assert
-		verify(accessGroupServiceMock).deleteAccessGroup(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		verify(accessGroupServiceMock).deleteAccessGroup(MUNICIPALITY_ID, NAMESPACE, ID);
 	}
 }

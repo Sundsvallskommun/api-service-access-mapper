@@ -27,17 +27,20 @@ class AccessGroupTest {
 	@Test
 	void builder() {
 		// Arrange
-		final var group = "group";
+		final var id = "id";
+		final var groupId = "groupId";
 		final var accessByType = List.of(new AccessType());
 
 		// Act
 		final var result = AccessGroup.create()
-			.withGroup(group)
+			.withId(id)
+			.withGroupId(groupId)
 			.withAccessByType(accessByType);
 
 		// Assert
 		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
-		assertThat(result.getGroup()).isEqualTo(group);
+		assertThat(result.getId()).isEqualTo(id);
+		assertThat(result.getGroupId()).isEqualTo(groupId);
 		assertThat(result.getAccessByType()).isEqualTo(accessByType);
 
 	}

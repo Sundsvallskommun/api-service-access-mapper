@@ -28,7 +28,7 @@ class AccessGroupResourceFailureTest {
 
 	private static final String NAMESPACE = "namespace";
 	private static final String MUNICIPALITY_ID = "2281";
-	private static final String GROUP_ID = "group123";
+	private static final String ID = "550e8400-e29b-41d4-a716-446655440000";
 	private static final String INVALID = "#invalid#";
 
 	private static final String PATH = "/{municipalityId}/{namespace}/access-config/group";
@@ -90,7 +90,7 @@ class AccessGroupResourceFailureTest {
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "groupId", GROUP_ID)))
+			.uri(builder -> builder.path(PATH.concat("/{id}")).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "id", ID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -113,7 +113,7 @@ class AccessGroupResourceFailureTest {
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "groupId", GROUP_ID)))
+			.uri(builder -> builder.path(PATH.concat("/{id}")).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "id", ID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -132,11 +132,11 @@ class AccessGroupResourceFailureTest {
 	}
 
 	@Test
-	void getAccessGroupWithBlankGroupId() {
+	void getAccessGroupWithInvalidId() {
 
 		// Act
 		final var response = webTestClient.get()
-			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "groupId", " ")))
+			.uri(builder -> builder.path(PATH.concat("/{id}")).build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "id", "not-a-uuid")))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -148,7 +148,7 @@ class AccessGroupResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::field, Violation::message)
-			.containsExactlyInAnyOrder(tuple("getAccessGroup.groupId", "must not be blank"));
+			.containsExactlyInAnyOrder(tuple("getAccessGroup.id", "not a valid UUID"));
 
 		// Assert
 		verifyNoInteractions(accessGroupServiceMock);
@@ -162,7 +162,7 @@ class AccessGroupResourceFailureTest {
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "groupId", GROUP_ID)))
+			.uri(builder -> builder.path(PATH).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(accessGroup)
 			.exchange()
@@ -190,7 +190,7 @@ class AccessGroupResourceFailureTest {
 
 		// Act
 		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "groupId", GROUP_ID)))
+			.uri(builder -> builder.path(PATH).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(accessGroup)
 			.exchange()
@@ -211,34 +211,6 @@ class AccessGroupResourceFailureTest {
 	}
 
 	@Test
-	void createAccessGroupWithBlankGroupId() {
-
-		// Arrange
-		final var accessGroup = new AccessGroup();
-
-		// Act
-		final var response = webTestClient.post()
-			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "groupId", " ")))
-			.contentType(APPLICATION_JSON)
-			.bodyValue(accessGroup)
-			.exchange()
-			.expectStatus().isBadRequest()
-			.expectBody(ConstraintViolationProblem.class)
-			.returnResult()
-			.getResponseBody();
-
-		assertThat(response).isNotNull();
-		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
-		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
-		assertThat(response.getViolations())
-			.extracting(Violation::field, Violation::message)
-			.containsExactlyInAnyOrder(tuple("createAccessGroup.groupId", "must not be blank"));
-
-		// Assert
-		verifyNoInteractions(accessGroupServiceMock);
-	}
-
-	@Test
 	void updateAccessGroupWithInvalidNamespace() {
 
 		// Arrange
@@ -246,7 +218,7 @@ class AccessGroupResourceFailureTest {
 
 		// Act
 		final var response = webTestClient.put()
-			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "groupId", GROUP_ID)))
+			.uri(builder -> builder.path(PATH.concat("/{id}")).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "id", ID)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(accessGroup)
 			.exchange()
@@ -274,7 +246,7 @@ class AccessGroupResourceFailureTest {
 
 		// Act
 		final var response = webTestClient.put()
-			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "groupId", GROUP_ID)))
+			.uri(builder -> builder.path(PATH.concat("/{id}")).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "id", ID)))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(accessGroup)
 			.exchange()
@@ -295,14 +267,14 @@ class AccessGroupResourceFailureTest {
 	}
 
 	@Test
-	void updateAccessGroupWithBlankGroupId() {
+	void updateAccessGroupWithInvalidId() {
 
 		// Arrange
 		final var accessGroup = new AccessGroup();
 
 		// Act
 		final var response = webTestClient.put()
-			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "groupId", " ")))
+			.uri(builder -> builder.path(PATH.concat("/{id}")).build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "id", "not-a-uuid")))
 			.contentType(APPLICATION_JSON)
 			.bodyValue(accessGroup)
 			.exchange()
@@ -316,7 +288,7 @@ class AccessGroupResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::field, Violation::message)
-			.containsExactlyInAnyOrder(tuple("updateAccessGroup.groupId", "must not be blank"));
+			.containsExactlyInAnyOrder(tuple("updateAccessGroup.id", "not a valid UUID"));
 
 		// Assert
 		verifyNoInteractions(accessGroupServiceMock);
@@ -327,7 +299,7 @@ class AccessGroupResourceFailureTest {
 
 		// Act
 		final var response = webTestClient.delete()
-			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "groupId", GROUP_ID)))
+			.uri(builder -> builder.path(PATH.concat("/{id}")).build(Map.of("namespace", INVALID, "municipalityId", MUNICIPALITY_ID, "id", ID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -350,7 +322,7 @@ class AccessGroupResourceFailureTest {
 
 		// Act
 		final var response = webTestClient.delete()
-			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "groupId", GROUP_ID)))
+			.uri(builder -> builder.path(PATH.concat("/{id}")).build(Map.of("namespace", NAMESPACE, "municipalityId", INVALID, "id", ID)))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -369,11 +341,11 @@ class AccessGroupResourceFailureTest {
 	}
 
 	@Test
-	void deleteAccessGroupWithBlankGroupId() {
+	void deleteAccessGroupWithInvalidId() {
 
 		// Act
 		final var response = webTestClient.delete()
-			.uri(builder -> builder.path(PATH.concat("/{groupId}")).build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "groupId", " ")))
+			.uri(builder -> builder.path(PATH.concat("/{id}")).build(Map.of("namespace", NAMESPACE, "municipalityId", MUNICIPALITY_ID, "id", "not-a-uuid")))
 			.exchange()
 			.expectStatus().isBadRequest()
 			.expectBody(ConstraintViolationProblem.class)
@@ -385,7 +357,7 @@ class AccessGroupResourceFailureTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations())
 			.extracting(Violation::field, Violation::message)
-			.containsExactlyInAnyOrder(tuple("deleteAccessGroup.groupId", "must not be blank"));
+			.containsExactlyInAnyOrder(tuple("deleteAccessGroup.id", "not a valid UUID"));
 
 		// Assert
 		verifyNoInteractions(accessGroupServiceMock);

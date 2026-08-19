@@ -27,9 +27,9 @@ public class AccessGroupService {
 		this.accessGroupRepository = accessGroupRepository;
 	}
 
-	public AccessGroup getAccessGroup(final String municipalityId, final String namespace, final String groupId) {
+	public AccessGroup getAccessGroup(final String municipalityId, final String namespace, final String id) {
 
-		return toAccessGroup(getAccessGroupEntity(municipalityId, namespace, groupId));
+		return toAccessGroup(getAccessGroupEntity(municipalityId, namespace, id));
 	}
 
 	public List<AccessGroup> getAccessGroups(final String municipalityId, final String namespace, final String type) {
@@ -40,40 +40,40 @@ public class AccessGroupService {
 		return toAccessGroups(accessGroupRepository.findAll(specification));
 	}
 
-	public void createAccessGroup(final String municipalityId, final String namespace, final String groupId, final AccessGroup accessGroup) {
+	public void createAccessGroup(final String municipalityId, final String namespace, final AccessGroup accessGroup) {
 
-		if (accessGroupRepository.existsByMunicipalityIdAndNamespaceAndGroupId(municipalityId, namespace, groupId)) {
+		if (accessGroupRepository.existsByMunicipalityIdAndNamespaceAndGroupId(municipalityId, namespace, accessGroup.getGroupId())) {
 			throw Problem.valueOf(CONFLICT,
 				"Access group already exists for municipalityId: %s, namespace: %s, groupId: %s.".formatted(
 					sanitizeForLogging(municipalityId),
 					sanitizeForLogging(namespace),
-					sanitizeForLogging(groupId)));
+					sanitizeForLogging(accessGroup.getGroupId())));
 		}
-		final var entity = toAccessGroupEntity(municipalityId, namespace, groupId, accessGroup);
+		final var entity = toAccessGroupEntity(municipalityId, namespace, accessGroup);
 		accessGroupRepository.save(entity);
 	}
 
-	public void updateAccessGroup(final String municipalityId, final String namespace, final String groupId, final AccessGroup accessGroup) {
-		final var existingEntity = getAccessGroupEntity(municipalityId, namespace, groupId);
-		final var newEntity = toAccessGroupEntity(municipalityId, namespace, groupId, accessGroup);
+	public void updateAccessGroup(final String municipalityId, final String namespace, final String id, final AccessGroup accessGroup) {
+		final var existingEntity = getAccessGroupEntity(municipalityId, namespace, id);
+		final var newEntity = toAccessGroupEntity(municipalityId, namespace, accessGroup);
 		newEntity.setId(existingEntity.getId());
 
 		accessGroupRepository.save(newEntity);
 	}
 
-	public void deleteAccessGroup(final String municipalityId, final String namespace, final String groupId) {
+	public void deleteAccessGroup(final String municipalityId, final String namespace, final String id) {
 
-		final var entity = getAccessGroupEntity(municipalityId, namespace, groupId);
+		final var entity = getAccessGroupEntity(municipalityId, namespace, id);
 		accessGroupRepository.delete(entity);
 	}
 
-	public AccessGroupEntity getAccessGroupEntity(final String municipalityId, final String namespace, final String groupId) {
-		return Optional.ofNullable(accessGroupRepository.findByMunicipalityIdAndNamespaceAndGroupId(municipalityId, namespace, groupId))
+	public AccessGroupEntity getAccessGroupEntity(final String municipalityId, final String namespace, final String id) {
+		return Optional.ofNullable(accessGroupRepository.findByMunicipalityIdAndNamespaceAndId(municipalityId, namespace, id))
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
-				"Access group not found for municipalityId: %s, namespace: %s, groupId: %s.".formatted(
+				"Access group not found for municipalityId: %s, namespace: %s, id: %s.".formatted(
 					sanitizeForLogging(municipalityId),
 					sanitizeForLogging(namespace),
-					sanitizeForLogging(groupId))));
+					sanitizeForLogging(id))));
 	}
 
 }
