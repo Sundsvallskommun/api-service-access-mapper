@@ -10,5 +10,7 @@ public interface AccessGroupRepository extends JpaRepository<AccessGroupEntity, 
 
 	AccessGroupEntity findByMunicipalityIdAndNamespaceAndGroupId(String municipalityId, String namespace, String groupId);
 
+	AccessGroupEntity findByMunicipalityIdAndNamespaceAndId(String municipalityId, String namespace, String id);
+
 	boolean existsByMunicipalityIdAndNamespaceAndGroupId(String municipalityId, String namespace, String groupId);
 }

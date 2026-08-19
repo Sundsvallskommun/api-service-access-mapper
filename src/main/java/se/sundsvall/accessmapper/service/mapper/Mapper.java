@@ -25,8 +25,9 @@ public final class Mapper {
 
 	public static AccessGroup toAccessGroup(final AccessGroupEntity entity) {
 		return AccessGroup.create()
+			.withId(entity.getId())
 			.withAccessByType(toAccessTypes(entity.getAccessByType()))
-			.withGroup(entity.getGroupId());
+			.withGroupId(entity.getGroupId());
 	}
 
 	public static List<AccessType> toAccessTypes(final List<AccessTypeEntity> entityList) {
@@ -49,11 +50,11 @@ public final class Mapper {
 			.withPattern(entity.getPattern());
 	}
 
-	public static AccessGroupEntity toAccessGroupEntity(final String municipalityId, final String namespace, final String groupId, final AccessGroup accessGroup) {
+	public static AccessGroupEntity toAccessGroupEntity(final String municipalityId, final String namespace, final AccessGroup accessGroup) {
 		return AccessGroupEntity.create()
 			.withNamespace(namespace)
 			.withMunicipalityId(municipalityId)
-			.withGroupId(groupId)
+			.withGroupId(accessGroup.getGroupId())
 			.withAccessByType(toAccessTypeEntities(accessGroup.getAccessByType()));
 
 	}
@@ -107,6 +108,6 @@ public final class Mapper {
 	public static AccessGroup toAccessGroupFromUser(final AccessUserEntity entity) {
 		return AccessGroup.create()
 			.withAccessByType(toAccessTypes(entity.getAccessByType()))
-			.withGroup(Constants.LOCAL_STORED_ACCESS_GROUP);
+			.withGroupId(Constants.LOCAL_STORED_ACCESS_GROUP);
 	}
 }

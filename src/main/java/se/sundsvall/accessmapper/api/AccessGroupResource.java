@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import se.sundsvall.accessmapper.api.model.AccessGroup;
 import se.sundsvall.accessmapper.service.AccessGroupService;
 import se.sundsvall.dept44.common.validators.annotation.ValidMunicipalityId;
+import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.dept44.problem.violations.ConstraintViolationProblem;
 
@@ -61,53 +61,52 @@ class AccessGroupResource {
 		return ResponseEntity.ok(accessGroupService.getAccessGroups(municipalityId, namespace, type));
 	}
 
-	@GetMapping(path = "/{groupId}", produces = APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
 	@ApiResponse(responseCode = "200", description = "Successful operation", useReturnTypeSchema = true)
 	@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	ResponseEntity<AccessGroup> getAccessGroup(
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "groupId", description = "Group ID", example = "group123") @NotBlank @PathVariable final String groupId) {
-		return ResponseEntity.ok(accessGroupService.getAccessGroup(municipalityId, namespace, groupId));
+		@Parameter(name = "id", description = "Access group ID", example = "550e8400-e29b-41d4-a716-446655440000") @ValidUuid @PathVariable final String id) {
+		return ResponseEntity.ok(accessGroupService.getAccessGroup(municipalityId, namespace, id));
 	}
 
-	@PostMapping(path = "/{groupId}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	@ApiResponse(responseCode = "201", description = "Successfully created", useReturnTypeSchema = true)
-	ResponseEntity<AccessGroup> createAccessGroup(
+	ResponseEntity<Void> createAccessGroup(
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "groupId", description = "Group ID", example = "group123") @NotBlank @PathVariable final String groupId,
 		@RequestBody @Valid final AccessGroup accessGroup) {
-		accessGroupService.createAccessGroup(municipalityId, namespace, groupId, accessGroup);
-		return created(fromPath("/{municipalityId}/{namespace}/access-config/group/{groupId}")
-			.buildAndExpand(municipalityId, namespace, groupId).toUri())
+		accessGroupService.createAccessGroup(municipalityId, namespace, accessGroup);
+		return created(fromPath("/{municipalityId}/{namespace}/access-config/group")
+			.buildAndExpand(municipalityId, namespace).toUri())
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
 
-	@PutMapping(path = "/{groupId}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
+	@PutMapping(path = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = ALL_VALUE)
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	ResponseEntity<Void> updateAccessGroup(
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "groupId", description = "Group ID", example = "group123") @NotBlank @PathVariable final String groupId,
+		@Parameter(name = "id", description = "Access group ID", example = "550e8400-e29b-41d4-a716-446655440000") @ValidUuid @PathVariable final String id,
 		@RequestBody @Valid final AccessGroup accessGroup) {
-		accessGroupService.updateAccessGroup(municipalityId, namespace, groupId, accessGroup);
+		accessGroupService.updateAccessGroup(municipalityId, namespace, id, accessGroup);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();
 	}
 
-	@DeleteMapping(path = "/{groupId}", produces = ALL_VALUE)
+	@DeleteMapping(path = "/{id}", produces = ALL_VALUE)
 	@ApiResponse(responseCode = "204", description = "No content - Successful operation", useReturnTypeSchema = true)
 	@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	ResponseEntity<Void> deleteAccessGroup(
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "groupId", description = "Group ID", example = "group123") @NotBlank @PathVariable final String groupId) {
+		@Parameter(name = "id", description = "Access group ID", example = "550e8400-e29b-41d4-a716-446655440000") @ValidUuid @PathVariable final String id) {
 
-		accessGroupService.deleteAccessGroup(municipalityId, namespace, groupId);
+		accessGroupService.deleteAccessGroup(municipalityId, namespace, id);
 		return noContent()
 			.header(CONTENT_TYPE, ALL_VALUE)
 			.build();

@@ -24,7 +24,8 @@
 				"type": "label"
 			}
 		],
-		"group": "11111111-1111-1111-1111-111111111111"
+		"groupId": "11111111-1111-1111-1111-111111111111",
+		"id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
 	},
 	{
 		"accessByType": [
@@ -38,7 +39,8 @@
 				"type": "label"
 			}
 		],
-		"group": "22222222-2222-2222-2222-222222222222"
+		"groupId": "22222222-2222-2222-2222-222222222222",
+		"id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 	},
 	{
 		"accessByType": [
@@ -52,6 +54,6 @@
 				"type": "label"
 			}
 		],
-		"group": "LOCAL STORED USER ACCESS"
+		"groupId": "LOCAL STORED USER ACCESS"
 	}
 ]

@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "1.1"
+  version: "2.0"
 servers:
-  - url: http://localhost:64414
+  - url: http://localhost:60024
     description: Generated server url
 tags:
   - name: Access Group
@@ -181,7 +181,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/{namespace}/access-config/group/{groupId}:
+  /{municipalityId}/{namespace}/access-config/group/{id}:
     get:
       tags:
         - Access Group
@@ -202,14 +202,13 @@ paths:
             type: string
             pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
-        - name: groupId
+        - name: id
           in: path
-          description: Group ID
+          description: Access group ID
           required: true
           schema:
             type: string
-            minLength: 1
-          example: group123
+          example: 550e8400-e29b-41d4-a716-446655440000
       responses:
         "200":
           description: Successful operation
@@ -257,14 +256,13 @@ paths:
             type: string
             pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
-        - name: groupId
+        - name: id
           in: path
-          description: Group ID
+          description: Access group ID
           required: true
           schema:
             type: string
-            minLength: 1
-          example: group123
+          example: 550e8400-e29b-41d4-a716-446655440000
       requestBody:
         content:
           application/json:
@@ -294,61 +292,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-    post:
-      tags:
-        - Access Group
-      operationId: createAccessGroup
-      parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            type: string
-            pattern: "[\\w|\\-]+"
-          example: MY_NAMESPACE
-        - name: groupId
-          in: path
-          description: Group ID
-          required: true
-          schema:
-            type: string
-            minLength: 1
-          example: group123
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AccessGroup"
-        required: true
-      responses:
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "201":
-          description: Successfully created
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/AccessGroup"
     delete:
       tags:
         - Access Group
@@ -369,14 +312,13 @@ paths:
             type: string
             pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
-        - name: groupId
+        - name: id
           in: path
-          description: Group ID
+          description: Access group ID
           required: true
           schema:
             type: string
-            minLength: 1
-          example: group123
+          example: 550e8400-e29b-41d4-a716-446655440000
       responses:
         "204":
           description: No content - Successful operation
@@ -487,6 +429,100 @@ paths:
                 $ref: "#/components/schemas/Problem"
         "201":
           description: Successfully created
+  /{municipalityId}/{namespace}/access-config/group:
+    get:
+      tags:
+        - Access Group
+      operationId: getAccessGroups
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+        - name: type
+          in: query
+          description: Filter type
+          required: false
+          schema:
+            type: string
+          example: label
+      responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccessGroup"
+    post:
+      tags:
+        - Access Group
+      operationId: createAccessGroup
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality ID
+          required: true
+          schema:
+            type: string
+          example: 2281
+        - name: namespace
+          in: path
+          description: Namespace
+          required: true
+          schema:
+            type: string
+            pattern: "[\\w|\\-]+"
+          example: MY_NAMESPACE
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccessGroup"
+        required: true
+      responses:
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "201":
+          description: Successfully created
   /{municipalityId}/{namespace}/access/ad/{adId}:
     get:
       tags:
@@ -551,57 +587,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/{namespace}/access-config/group:
-    get:
-      tags:
-        - Access Group
-      operationId: getAccessGroups
-      parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            type: string
-            pattern: "[\\w|\\-]+"
-          example: MY_NAMESPACE
-        - name: type
-          in: query
-          description: Filter type
-          required: false
-          schema:
-            type: string
-          example: label
-      responses:
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/AccessGroup"
   /api-docs:
     get:
       tags:
@@ -736,7 +721,13 @@ components:
       type: object
       description: Access group model
       properties:
-        group:
+        id:
+          type: string
+          description: Access group id
+          examples:
+            - 550e8400-e29b-41d4-a716-446655440000
+          readOnly: true
+        groupId:
           type: string
           description: Access group
           examples:
