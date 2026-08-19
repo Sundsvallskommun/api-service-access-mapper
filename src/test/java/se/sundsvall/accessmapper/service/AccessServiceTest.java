@@ -4,6 +4,7 @@ import generated.se.sundsvall.activedirectory.OUChildren;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.accessmapper.api.model.AccessLevel;
 import se.sundsvall.accessmapper.integration.activedirectory.ActiveDirectoryClient;
+import se.sundsvall.accessmapper.integration.activedirectory.configuration.ActiveDirectoryProperties;
 import se.sundsvall.accessmapper.integration.db.AccessGroupRepository;
 import se.sundsvall.accessmapper.integration.db.AccessUserRepository;
 import se.sundsvall.accessmapper.integration.db.model.AccessEntity;
@@ -21,6 +23,7 @@ import se.sundsvall.dept44.exception.ServerProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -45,6 +48,9 @@ class AccessServiceTest {
 	private ActiveDirectoryClient activeDirectoryClientMock;
 
 	@Mock
+	private ActiveDirectoryProperties activeDirectoryPropertiesMock;
+
+	@Mock
 	private AccessGroupRepository accessGroupRepositoryMock;
 
 	@Mock
@@ -52,6 +58,11 @@ class AccessServiceTest {
 
 	@InjectMocks
 	private AccessService service;
+
+	@BeforeEach
+	void setUp() {
+		lenient().when(activeDirectoryPropertiesMock.domain()).thenReturn(DOMAIN);
+	}
 
 	@Test
 	void getAccessDetailsWithTypeFilter() {

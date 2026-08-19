@@ -8,6 +8,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import se.sundsvall.accessmapper.api.model.AccessGroup;
 import se.sundsvall.accessmapper.integration.activedirectory.ActiveDirectoryClient;
+import se.sundsvall.accessmapper.integration.activedirectory.configuration.ActiveDirectoryProperties;
 import se.sundsvall.accessmapper.integration.db.AccessGroupRepository;
 import se.sundsvall.accessmapper.integration.db.AccessUserRepository;
 import se.sundsvall.accessmapper.service.mapper.Mapper;
@@ -19,14 +20,14 @@ import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessGroups;
 @Service
 public class AccessService {
 
-	private static final String DOMAIN = "personal";
-
 	private final ActiveDirectoryClient activeDirectoryClient;
+	private final ActiveDirectoryProperties activeDirectoryProperties;
 	private final AccessGroupRepository accessGroupRepository;
 	private final AccessUserRepository accessUserRepository;
 
-	public AccessService(final ActiveDirectoryClient activeDirectoryClient, final AccessGroupRepository accessGroupRepository, final AccessUserRepository accessUserRepository) {
+	public AccessService(final ActiveDirectoryClient activeDirectoryClient, final ActiveDirectoryProperties activeDirectoryProperties, final AccessGroupRepository accessGroupRepository, final AccessUserRepository accessUserRepository) {
 		this.activeDirectoryClient = activeDirectoryClient;
+		this.activeDirectoryProperties = activeDirectoryProperties;
 		this.accessGroupRepository = accessGroupRepository;
 		this.accessUserRepository = accessUserRepository;
 	}
@@ -35,7 +36,7 @@ public class AccessService {
 
 		List<OUChildren> adGroups;
 		try {
-			adGroups = activeDirectoryClient.getGroupsForUser(municipalityId, DOMAIN, adId);
+			adGroups = activeDirectoryClient.getGroupsForUser(municipalityId, activeDirectoryProperties.domain(), adId);
 		} catch (final ThrowableProblem e) {
 			if (NOT_FOUND == e.getStatus()) {
 				adGroups = Collections.emptyList();
