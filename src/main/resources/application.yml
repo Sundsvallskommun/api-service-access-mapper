@@ -27,6 +27,7 @@ integration:
   active-directory:
     connectTimeout: 5
     readTimeout: 30
+    domain: personal
 
 resilience4j:
   circuitbreaker:
