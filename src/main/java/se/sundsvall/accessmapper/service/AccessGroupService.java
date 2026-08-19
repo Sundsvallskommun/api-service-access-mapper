@@ -42,7 +42,7 @@ public class AccessGroupService {
 
 	public void createAccessGroup(final String municipalityId, final String namespace, final String groupId, final AccessGroup accessGroup) {
 
-		if (accessGroupRepository.existsByMunicipalityIdAndNamespaceAndId(municipalityId, namespace, groupId)) {
+		if (accessGroupRepository.existsByMunicipalityIdAndNamespaceAndGroupId(municipalityId, namespace, groupId)) {
 			throw Problem.valueOf(CONFLICT,
 				"Access group already exists for municipalityId: %s, namespace: %s, groupId: %s.".formatted(
 					sanitizeForLogging(municipalityId),
@@ -54,8 +54,9 @@ public class AccessGroupService {
 	}
 
 	public void updateAccessGroup(final String municipalityId, final String namespace, final String groupId, final AccessGroup accessGroup) {
-		getAccessGroupEntity(municipalityId, namespace, groupId);
+		final var existingEntity = getAccessGroupEntity(municipalityId, namespace, groupId);
 		final var newEntity = toAccessGroupEntity(municipalityId, namespace, groupId, accessGroup);
+		newEntity.setId(existingEntity.getId());
 
 		accessGroupRepository.save(newEntity);
 	}
@@ -67,7 +68,7 @@ public class AccessGroupService {
 	}
 
 	public AccessGroupEntity getAccessGroupEntity(final String municipalityId, final String namespace, final String groupId) {
-		return Optional.ofNullable(accessGroupRepository.findByMunicipalityIdAndNamespaceAndId(municipalityId, namespace, groupId))
+		return Optional.ofNullable(accessGroupRepository.findByMunicipalityIdAndNamespaceAndGroupId(municipalityId, namespace, groupId))
 			.orElseThrow(() -> Problem.valueOf(NOT_FOUND,
 				"Access group not found for municipalityId: %s, namespace: %s, groupId: %s.".formatted(
 					sanitizeForLogging(municipalityId),

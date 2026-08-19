@@ -30,6 +30,7 @@ class AccessGroupEntityTest {
 		final var id = "id";
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
+		final var groupId = "groupId";
 		final var accessByType = List.of(new AccessTypeEntity());
 
 		// Act
@@ -37,6 +38,7 @@ class AccessGroupEntityTest {
 			.withId(id)
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
+			.withGroupId(groupId)
 			.withAccessByType(accessByType);
 
 		// Assert
@@ -44,6 +46,7 @@ class AccessGroupEntityTest {
 		assertThat(result.getId()).isEqualTo(id);
 		assertThat(result.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(result.getNamespace()).isEqualTo(namespace);
+		assertThat(result.getGroupId()).isEqualTo(groupId);
 		assertThat(result.getAccessByType()).isEqualTo(accessByType);
 
 	}
