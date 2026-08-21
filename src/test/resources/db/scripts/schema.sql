@@ -8,6 +8,7 @@
     ) engine=InnoDB;
 
     create table access_group (
+        group_id varchar(36),
         id varchar(255) not null,
         municipality_id varchar(255),
         namespace varchar(255),
@@ -16,17 +17,40 @@
 
     create table access_type (
         access_group_id varchar(255),
+        access_user_id varchar(255),
         id varchar(255) not null,
         type varchar(255),
         primary key (id)
     ) engine=InnoDB;
 
-    alter table if exists access 
-       add constraint fk_access_type_id 
-       foreign key (access_type_id) 
+    create table access_user (
+        id varchar(255) not null,
+        municipality_id varchar(255),
+        namespace varchar(255),
+        user_id varchar(255),
+        primary key (id)
+    ) engine=InnoDB;
+
+    create index idx_id_group_id
+       on access_group (id, group_id);
+
+    create index idx_municipality_id_namespace_group_id
+       on access_group (municipality_id, namespace, group_id);
+
+    alter table if exists access_group
+       add constraint uq_municipality_id_namespace_group_id unique (municipality_id, namespace, group_id);
+
+    alter table if exists access
+       add constraint fk_access_type_id
+       foreign key (access_type_id)
        references access_type (id);
 
-    alter table if exists access_type 
-       add constraint fk_access_group_id 
-       foreign key (access_group_id) 
+    alter table if exists access_type
+       add constraint fk_access_user_id
+       foreign key (access_user_id)
+       references access_user (id);
+
+    alter table if exists access_type
+       add constraint fk_access_group_id
+       foreign key (access_group_id)
        references access_group (id);

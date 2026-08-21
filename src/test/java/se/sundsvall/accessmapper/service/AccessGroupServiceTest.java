@@ -40,6 +40,8 @@ class AccessGroupServiceTest {
 
 	private static final String MUNICIPALITY_ID = "municipalityId";
 
+	private static final String ID = "id";
+
 	private static final String GROUP_ID = "groupId";
 
 	private static final String TYPE = "type";
@@ -57,7 +59,8 @@ class AccessGroupServiceTest {
 	void getAccessGroup() {
 		// Arrange
 		final var entity = AccessGroupEntity.create()
-			.withId(GROUP_ID)
+			.withId(ID)
+			.withGroupId(GROUP_ID)
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity
@@ -68,42 +71,43 @@ class AccessGroupServiceTest {
 					.withPattern("pattern")
 					.withAccessLevel(AccessLevel.LR.name())))));
 
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID))
 			.thenReturn(entity);
 
 		// Act
-		final var response = service.getAccessGroup(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		final var response = service.getAccessGroup(MUNICIPALITY_ID, NAMESPACE, ID);
 
 		// Assert
 		assertThat(response).isNotNull();
-		assertThat(response.getGroup()).isEqualTo(GROUP_ID);
+		assertThat(response.getId()).isEqualTo(ID);
+		assertThat(response.getGroupId()).isEqualTo(GROUP_ID);
 
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID);
 	}
 
 	@Test
 	void getAccessGroupNotFound() {
 
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID))
 			.thenReturn(null);
 
 		// Act
 		final var exception = assertThrows(ThrowableProblem.class,
-			() -> service.getAccessGroup(MUNICIPALITY_ID, NAMESPACE, GROUP_ID));
+			() -> service.getAccessGroup(MUNICIPALITY_ID, NAMESPACE, ID));
 
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(exception.getTitle()).isEqualTo(NOT_FOUND.getReasonPhrase());
-		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found for municipalityId: municipalityId, namespace: namespace, groupId: groupId.");
+		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found for municipalityId: municipalityId, namespace: namespace, id: id.");
 
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID);
 	}
 
 	@Test
 	void getAccessGroupsWithMatches() {
 		// Arrange
 		final var entity1 = AccessGroupEntity.create()
-			.withId("group1")
+			.withGroupId("group1")
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity
@@ -114,7 +118,7 @@ class AccessGroupServiceTest {
 					.withPattern("pattern")
 					.withAccessLevel(AccessLevel.LR.name())))));
 		final var entity2 = AccessGroupEntity.create()
-			.withId("group2")
+			.withGroupId("group2")
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity
@@ -133,8 +137,8 @@ class AccessGroupServiceTest {
 
 		// Assert
 		assertThat(response).isNotNull().hasSize(2);
-		assertThat(response.getFirst().getGroup()).isEqualTo("group1");
-		assertThat(response.getLast().getGroup()).isEqualTo("group2");
+		assertThat(response.getFirst().getGroupId()).isEqualTo("group1");
+		assertThat(response.getLast().getGroupId()).isEqualTo("group2");
 
 		verify(accessGroupRepositoryMock).findAll(specificationCaptor.capture());
 		assertThat(specificationCaptor.getValue()).usingRecursiveComparison().isEqualTo(withMunicipalityId(MUNICIPALITY_ID).and(withNamespace(NAMESPACE)).and(withAccessType(TYPE)));
@@ -159,7 +163,7 @@ class AccessGroupServiceTest {
 	@Test
 	void createAccessGroup() {
 		// Arrange
-		final var accessGroup = AccessGroup.create().withGroup(GROUP_ID)
+		final var accessGroup = AccessGroup.create().withGroupId(GROUP_ID)
 			.withAccessByType(List.of(AccessType
 				.create()
 				.withType(TYPE)
@@ -169,30 +173,31 @@ class AccessGroupServiceTest {
 					.withAccessLevel(AccessLevel.RW)))));
 
 		final var entity = AccessGroupEntity.create()
-			.withId(GROUP_ID)
+			.withGroupId(GROUP_ID)
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE);
 
-		when(accessGroupRepositoryMock.existsByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID)).thenReturn(false);
+		when(accessGroupRepositoryMock.existsByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID)).thenReturn(false);
 		when(accessGroupRepositoryMock.save(any(AccessGroupEntity.class))).thenReturn(entity);
 
 		// Act
-		service.createAccessGroup(MUNICIPALITY_ID, NAMESPACE, GROUP_ID, accessGroup);
+		service.createAccessGroup(MUNICIPALITY_ID, NAMESPACE, accessGroup);
 
 		// Assert
+		verify(accessGroupRepositoryMock).existsByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
 		verify(accessGroupRepositoryMock).save(any(AccessGroupEntity.class));
 	}
 
 	@Test
 	void createAccessGroupWithExistingId() {
 		// Arrange
-		when(accessGroupRepositoryMock.existsByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID))
+		when(accessGroupRepositoryMock.existsByMunicipalityIdAndNamespaceAndGroupId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID))
 			.thenReturn(true);
-		final var accessGroup = AccessGroup.create().withGroup(GROUP_ID);
+		final var accessGroup = AccessGroup.create().withGroupId(GROUP_ID);
 
 		// Act
 		final var exception = assertThrows(ThrowableProblem.class,
-			() -> service.createAccessGroup(MUNICIPALITY_ID, NAMESPACE, GROUP_ID, accessGroup));
+			() -> service.createAccessGroup(MUNICIPALITY_ID, NAMESPACE, accessGroup));
 
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(CONFLICT);
@@ -204,7 +209,7 @@ class AccessGroupServiceTest {
 	@Test
 	void updateExistingAccessGroup() {
 		// Arrange
-		final var accessGroup = AccessGroup.create().withGroup(GROUP_ID)
+		final var accessGroup = AccessGroup.create().withGroupId(GROUP_ID)
 			.withAccessByType(List.of(AccessType
 				.create()
 				.withType(TYPE)
@@ -213,7 +218,8 @@ class AccessGroupServiceTest {
 					.withPattern("pattern")
 					.withAccessLevel(AccessLevel.RW)))));
 		final var existingEntity = AccessGroupEntity.create()
-			.withId(GROUP_ID)
+			.withId(ID)
+			.withGroupId(GROUP_ID)
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE)
 			.withAccessByType(List.of(AccessTypeEntity
@@ -224,115 +230,118 @@ class AccessGroupServiceTest {
 					.withPattern("pattern")
 					.withAccessLevel(AccessLevel.LR.name())))));
 
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID))
 			.thenReturn(existingEntity);
 		when(accessGroupRepositoryMock.save(any(AccessGroupEntity.class))).thenReturn(existingEntity);
 
 		// Act
-		service.updateAccessGroup(MUNICIPALITY_ID, NAMESPACE, GROUP_ID, accessGroup);
+		service.updateAccessGroup(MUNICIPALITY_ID, NAMESPACE, ID, accessGroup);
 
 		// Assert
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID);
 		verify(accessGroupRepositoryMock).save(any(AccessGroupEntity.class));
 	}
 
 	@Test
 	void updateNonExistingAccessGroup() {
 		// Arrange
-		final var accessGroup = AccessGroup.create().withGroup(GROUP_ID);
+		final var accessGroup = AccessGroup.create().withGroupId(GROUP_ID);
 
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID))
 			.thenReturn(null);
 
 		// Act
 		final var exception = assertThrows(ThrowableProblem.class,
-			() -> service.updateAccessGroup(MUNICIPALITY_ID, NAMESPACE, GROUP_ID, accessGroup));
+			() -> service.updateAccessGroup(MUNICIPALITY_ID, NAMESPACE, ID, accessGroup));
 
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(exception.getTitle()).isEqualTo(NOT_FOUND.getReasonPhrase());
-		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found for municipalityId: municipalityId, namespace: namespace, groupId: groupId.");
+		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found for municipalityId: municipalityId, namespace: namespace, id: id.");
 
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID);
 	}
 
 	@Test
 	void deleteExistingAccessGroup() {
 		// Arrange
 		final var entity = AccessGroupEntity.create()
-			.withId(GROUP_ID)
+			.withId(ID)
+			.withGroupId(GROUP_ID)
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE);
 
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID))
 			.thenReturn(entity);
 
 		// Act
-		service.deleteAccessGroup(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		service.deleteAccessGroup(MUNICIPALITY_ID, NAMESPACE, ID);
 
 		// Assert
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID);
 		verify(accessGroupRepositoryMock).delete(entity);
 	}
 
 	@Test
 	void deleteNonExistingAccessGroup() {
 
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID))
 			.thenReturn(null);
 
 		// Act
 		final var exception = assertThrows(ThrowableProblem.class,
-			() -> service.deleteAccessGroup(MUNICIPALITY_ID, NAMESPACE, GROUP_ID));
+			() -> service.deleteAccessGroup(MUNICIPALITY_ID, NAMESPACE, ID));
 
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(exception.getTitle()).isEqualTo(NOT_FOUND.getReasonPhrase());
-		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found for municipalityId: municipalityId, namespace: namespace, groupId: groupId.");
+		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found for municipalityId: municipalityId, namespace: namespace, id: id.");
 
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID);
 	}
 
 	@Test
 	void getAccessGroupEntity() {
 		// Arrange
 		final var entity = AccessGroupEntity.create()
-			.withId(GROUP_ID)
+			.withId(ID)
+			.withGroupId(GROUP_ID)
 			.withMunicipalityId(MUNICIPALITY_ID)
 			.withNamespace(NAMESPACE);
 
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID))
 			.thenReturn(entity);
 
 		// Act
-		final var response = service.getAccessGroupEntity(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		final var response = service.getAccessGroupEntity(MUNICIPALITY_ID, NAMESPACE, ID);
 
 		// Assert
 		assertThat(response).isNotNull();
-		assertThat(response.getId()).isEqualTo(GROUP_ID);
+		assertThat(response.getId()).isEqualTo(ID);
+		assertThat(response.getGroupId()).isEqualTo(GROUP_ID);
 		assertThat(response.getMunicipalityId()).isEqualTo(MUNICIPALITY_ID);
 		assertThat(response.getNamespace()).isEqualTo(NAMESPACE);
 
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID);
 	}
 
 	@Test
 	void getAccessGroupEntityNotFound() {
 
 		// Arrange
-		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID))
+		when(accessGroupRepositoryMock.findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID))
 			.thenReturn(null);
 
 		// Act
 		final var exception = assertThrows(ThrowableProblem.class,
-			() -> service.getAccessGroupEntity(MUNICIPALITY_ID, NAMESPACE, GROUP_ID));
+			() -> service.getAccessGroupEntity(MUNICIPALITY_ID, NAMESPACE, ID));
 
 		// Assert
 		assertThat(exception.getStatus()).isEqualTo(NOT_FOUND);
 		assertThat(exception.getTitle()).isEqualTo(NOT_FOUND.getReasonPhrase());
-		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found for municipalityId: municipalityId, namespace: namespace, groupId: groupId.");
+		assertThat(exception.getMessage()).isEqualTo("Not Found: Access group not found for municipalityId: municipalityId, namespace: namespace, id: id.");
 
-		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, GROUP_ID);
+		verify(accessGroupRepositoryMock).findByMunicipalityIdAndNamespaceAndId(MUNICIPALITY_ID, NAMESPACE, ID);
 	}
 
 	@AfterEach

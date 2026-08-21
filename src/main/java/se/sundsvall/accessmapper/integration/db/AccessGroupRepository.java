@@ -8,7 +8,9 @@ import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
 @CircuitBreaker(name = "accessGroupRepository")
 public interface AccessGroupRepository extends JpaRepository<AccessGroupEntity, Long>, JpaSpecificationExecutor<AccessGroupEntity> {
 
+	AccessGroupEntity findByMunicipalityIdAndNamespaceAndGroupId(String municipalityId, String namespace, String groupId);
+
 	AccessGroupEntity findByMunicipalityIdAndNamespaceAndId(String municipalityId, String namespace, String id);
 
-	boolean existsByMunicipalityIdAndNamespaceAndId(String municipalityId, String namespace, String id);
+	boolean existsByMunicipalityIdAndNamespaceAndGroupId(String municipalityId, String namespace, String groupId);
 }

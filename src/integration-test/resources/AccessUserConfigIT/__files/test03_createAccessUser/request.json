@@ -1,0 +1,14 @@
+{
+	"userId": "jane01doe",
+	"accessByType": [
+		{
+			"type": "label",
+			"access": [
+				{
+					"pattern": "NEW/**",
+					"accessLevel": "LR"
+				}
+			]
+		}
+	]
+}

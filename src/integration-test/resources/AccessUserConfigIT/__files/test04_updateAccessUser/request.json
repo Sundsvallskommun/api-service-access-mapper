@@ -1,0 +1,18 @@
+{
+	"userId": "joe01doe",
+	"accessByType": [
+		{
+			"type": "label",
+			"access": [
+				{
+					"pattern": "UPDATED/**",
+					"accessLevel": "R"
+				},
+				{
+					"pattern": "ANOTHER/PATTERN",
+					"accessLevel": "LR"
+				}
+			]
+		}
+	]
+}

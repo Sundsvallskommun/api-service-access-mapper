@@ -1,5 +1,5 @@
 {
-	"group": "22222222-2222-2222-2222-222222222222",
+	"groupId": "22222222-2222-2222-2222-222222222222",
 	"accessByType": [
 		{
 			"type": "label",
@@ -10,5 +10,6 @@
 				}
 			]
 		}
-	]
+	],
+	"id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 }

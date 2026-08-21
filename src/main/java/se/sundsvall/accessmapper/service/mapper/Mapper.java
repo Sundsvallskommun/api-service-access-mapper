@@ -2,13 +2,16 @@ package se.sundsvall.accessmapper.service.mapper;
 
 import java.util.List;
 import java.util.Optional;
+import se.sundsvall.accessmapper.Constants;
 import se.sundsvall.accessmapper.api.model.Access;
 import se.sundsvall.accessmapper.api.model.AccessGroup;
 import se.sundsvall.accessmapper.api.model.AccessLevel;
 import se.sundsvall.accessmapper.api.model.AccessType;
+import se.sundsvall.accessmapper.api.model.AccessUser;
 import se.sundsvall.accessmapper.integration.db.model.AccessEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
 import se.sundsvall.accessmapper.integration.db.model.AccessTypeEntity;
+import se.sundsvall.accessmapper.integration.db.model.AccessUserEntity;
 
 import static java.util.Collections.emptyList;
 
@@ -22,8 +25,9 @@ public final class Mapper {
 
 	public static AccessGroup toAccessGroup(final AccessGroupEntity entity) {
 		return AccessGroup.create()
+			.withId(entity.getId())
 			.withAccessByType(toAccessTypes(entity.getAccessByType()))
-			.withGroup(entity.getId());
+			.withGroupId(entity.getGroupId());
 	}
 
 	public static List<AccessType> toAccessTypes(final List<AccessTypeEntity> entityList) {
@@ -46,11 +50,11 @@ public final class Mapper {
 			.withPattern(entity.getPattern());
 	}
 
-	public static AccessGroupEntity toAccessGroupEntity(final String municipalityId, final String namespace, final String groupId, final AccessGroup accessGroup) {
+	public static AccessGroupEntity toAccessGroupEntity(final String municipalityId, final String namespace, final AccessGroup accessGroup) {
 		return AccessGroupEntity.create()
 			.withNamespace(namespace)
 			.withMunicipalityId(municipalityId)
-			.withId(groupId)
+			.withGroupId(accessGroup.getGroupId())
 			.withAccessByType(toAccessTypeEntities(accessGroup.getAccessByType()));
 
 	}
@@ -76,4 +80,34 @@ public final class Mapper {
 			.withPattern(access.getPattern());
 	}
 
+	public static List<AccessUser> toAccessUsers(final List<AccessUserEntity> entities) {
+		return Optional.ofNullable(entities).orElse(emptyList()).stream().map(Mapper::toAccessUser).toList();
+	}
+
+	public static AccessUser toAccessUser(final AccessUserEntity entity) {
+		return AccessUser.create()
+			.withId(entity.getId())
+			.withUserId(entity.getUserId())
+			.withAccessByType(toAccessTypes(entity.getAccessByType()));
+	}
+
+	public static AccessUserEntity toAccessUserEntity(final String municipalityId, final String namespace, final AccessUser accessUser) {
+		return AccessUserEntity.create()
+			.withMunicipalityId(municipalityId)
+			.withNamespace(namespace)
+			.withUserId(accessUser.getUserId())
+			.withAccessByType(toAccessTypeEntities(accessUser.getAccessByType()));
+	}
+
+	public static void updateAccessUserEntity(final AccessUserEntity entity, final AccessUser accessUser) {
+		entity.setUserId(accessUser.getUserId());
+		entity.getAccessByType().clear();
+		entity.getAccessByType().addAll(toAccessTypeEntities(accessUser.getAccessByType()));
+	}
+
+	public static AccessGroup toAccessGroupFromUser(final AccessUserEntity entity) {
+		return AccessGroup.create()
+			.withAccessByType(toAccessTypes(entity.getAccessByType()))
+			.withGroupId(Constants.LOCAL_STORED_ACCESS_GROUP);
+	}
 }

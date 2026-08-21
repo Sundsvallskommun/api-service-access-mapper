@@ -1,0 +1,15 @@
+{
+	"id": "33333333-3333-3333-3333-333333333333",
+	"userId": "joe01doe",
+	"accessByType": [
+		{
+			"type": "label",
+			"access": [
+				{
+					"pattern": "USER/**",
+					"accessLevel": "RW"
+				}
+			]
+		}
+	]
+}
