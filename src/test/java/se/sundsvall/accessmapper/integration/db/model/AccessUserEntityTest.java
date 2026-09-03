@@ -31,6 +31,7 @@ class AccessUserEntityTest {
 		final var municipalityId = "municipalityId";
 		final var namespace = "namespace";
 		final var userId = "userId";
+		final var origin = "MANUAL";
 		final var accessByType = List.of(new AccessTypeEntity());
 
 		// Act
@@ -39,6 +40,7 @@ class AccessUserEntityTest {
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
 			.withUserId(userId)
+			.withOrigin(origin)
 			.withAccessByType(accessByType);
 
 		// Assert
@@ -47,6 +49,7 @@ class AccessUserEntityTest {
 		assertThat(result.getMunicipalityId()).isEqualTo(municipalityId);
 		assertThat(result.getNamespace()).isEqualTo(namespace);
 		assertThat(result.getUserId()).isEqualTo(userId);
+		assertThat(result.getOrigin()).isEqualTo(origin);
 		assertThat(result.getAccessByType()).isEqualTo(accessByType);
 	}
 

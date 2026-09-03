@@ -29,18 +29,21 @@ class AccessUserTest {
 		// Arrange
 		final var id = "id";
 		final var userId = "userId";
+		final var origin = "MANUAL";
 		final var accessByType = List.of(new AccessType());
 
 		// Act
 		final var result = AccessUser.create()
 			.withId(id)
 			.withUserId(userId)
+			.withOrigin(origin)
 			.withAccessByType(accessByType);
 
 		// Assert
 		assertThat(result).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(result.getId()).isEqualTo(id);
 		assertThat(result.getUserId()).isEqualTo(userId);
+		assertThat(result.getOrigin()).isEqualTo(origin);
 		assertThat(result.getAccessByType()).isEqualTo(accessByType);
 	}
 

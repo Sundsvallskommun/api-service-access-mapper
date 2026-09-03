@@ -13,6 +13,9 @@ public class AccessUser {
 	@Schema(description = "User identifier", example = "joe01doe")
 	private String userId;
 
+	@Schema(description = "How the entity was created", example = "MANUAL", accessMode = Schema.AccessMode.READ_ONLY)
+	private String origin;
+
 	@Schema(description = "Access by type")
 	private List<AccessType> accessByType;
 
@@ -46,6 +49,19 @@ public class AccessUser {
 		return this;
 	}
 
+	public String getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(final String origin) {
+		this.origin = origin;
+	}
+
+	public AccessUser withOrigin(final String origin) {
+		this.origin = origin;
+		return this;
+	}
+
 	public List<AccessType> getAccessByType() {
 		return accessByType;
 	}
@@ -64,12 +80,12 @@ public class AccessUser {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		final AccessUser that = (AccessUser) o;
-		return Objects.equals(id, that.id) && Objects.equals(userId, that.userId) && Objects.equals(accessByType, that.accessByType);
+		return Objects.equals(id, that.id) && Objects.equals(userId, that.userId) && Objects.equals(origin, that.origin) && Objects.equals(accessByType, that.accessByType);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, userId, accessByType);
+		return Objects.hash(id, userId, origin, accessByType);
 	}
 
 	@Override
@@ -77,6 +93,7 @@ public class AccessUser {
 		return "AccessUser{" +
 			"id='" + id + '\'' +
 			", userId='" + userId + '\'' +
+			", origin='" + origin + '\'' +
 			", accessByType=" + accessByType +
 			'}';
 	}
