@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: "2.1"
 servers:
-  - url: http://localhost:62133
+  - url: http://localhost:52693
     description: Generated server url
 tags:
   - name: Access Group
@@ -363,6 +363,13 @@ paths:
             type: string
             pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
+        - name: origin
+          in: query
+          description: Filter by origin
+          required: false
+          schema:
+            type: string
+          example: MANUAL
       responses:
         "400":
           description: Bad request
@@ -654,7 +661,6 @@ components:
           type: string
           description: How the entity was created
           example: MANUAL
-          readOnly: true
         accessByType:
           type: array
           description: Access by type
@@ -669,9 +675,9 @@ components:
         type:
           type: string
           format: uri
-        detail:
-          type: string
         title:
+          type: string
+        detail:
           type: string
         status:
           type: integer
@@ -694,10 +700,10 @@ components:
         instance:
           type: string
           format: uri
-        causeAsProblem:
-          $ref: "#/components/schemas/ThrowableProblem"
         detail:
           type: string
+        causeAsProblem:
+          $ref: "#/components/schemas/ThrowableProblem"
     ThrowableProblem:
       type: object
       properties:

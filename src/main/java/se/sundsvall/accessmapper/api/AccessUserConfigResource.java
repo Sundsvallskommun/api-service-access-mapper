@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import se.sundsvall.accessmapper.api.model.AccessUser;
 import se.sundsvall.accessmapper.service.AccessUserService;
@@ -55,8 +56,9 @@ class AccessUserConfigResource {
 	@ApiResponse(responseCode = "200", description = "Successful operation")
 	ResponseEntity<List<AccessUser>> getAccessUsers(
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
-		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace) {
-		return ResponseEntity.ok(accessUserService.getAccessUsers(municipalityId, namespace));
+		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
+		@Parameter(name = "origin", description = "Filter by origin", example = "MANUAL") @RequestParam(required = false) final String origin) {
+		return ResponseEntity.ok(accessUserService.getAccessUsers(municipalityId, namespace, origin));
 	}
 
 	@GetMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)

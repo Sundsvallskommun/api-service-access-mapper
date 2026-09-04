@@ -63,7 +63,7 @@ class AccessUserServiceTest {
 			.thenReturn(List.of(entity));
 
 		// Act
-		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE);
+		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null);
 
 		// Assert
 		assertThat(response).hasSize(1);
@@ -75,13 +75,44 @@ class AccessUserServiceTest {
 	}
 
 	@Test
+	void getAccessUsersWithOriginFilter() {
+		// Arrange
+		final var origin = "MANUAL";
+		final var entity = AccessUserEntity.create()
+			.withId(ID)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withUserId(USER_ID)
+			.withOrigin(origin)
+			.withAccessByType(List.of(AccessTypeEntity.create()
+				.withType(TYPE)
+				.withAccess(List.of(AccessEntity.create()
+					.withPattern("pattern")
+					.withAccessLevel(AccessLevel.LR.name())))));
+
+		when(accessUserRepositoryMock.findAllByMunicipalityIdAndNamespaceAndOrigin(MUNICIPALITY_ID, NAMESPACE, origin))
+			.thenReturn(List.of(entity));
+
+		// Act
+		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, origin);
+
+		// Assert
+		assertThat(response).hasSize(1);
+		assertThat(response.getFirst().getId()).isEqualTo(ID);
+		assertThat(response.getFirst().getUserId()).isEqualTo(USER_ID);
+		assertThat(response.getFirst().getOrigin()).isEqualTo(origin);
+
+		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespaceAndOrigin(MUNICIPALITY_ID, NAMESPACE, origin);
+	}
+
+	@Test
 	void getAccessUsersEmpty() {
 		// Arrange
 		when(accessUserRepositoryMock.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE))
 			.thenReturn(List.of());
 
 		// Act
-		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE);
+		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null);
 
 		// Assert
 		assertThat(response).isEmpty();

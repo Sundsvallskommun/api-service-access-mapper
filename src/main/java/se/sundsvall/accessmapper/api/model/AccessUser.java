@@ -3,6 +3,7 @@ package se.sundsvall.accessmapper.api.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 @Schema(description = "Access user model")
 public class AccessUser {
@@ -13,7 +14,10 @@ public class AccessUser {
 	@Schema(description = "User identifier", example = "joe01doe")
 	private String userId;
 
-	@Schema(description = "How the entity was created", example = "MANUAL", accessMode = Schema.AccessMode.READ_ONLY)
+	@Schema(description = "How the entity was created", example = "MANUAL")
+	@OneOf(value = {
+		"MANUAL", "AUTOMATIC"
+	}, nullable = true)
 	private String origin;
 
 	@Schema(description = "Access by type")
