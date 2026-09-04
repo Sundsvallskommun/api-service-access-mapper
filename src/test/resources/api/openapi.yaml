@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "2.0"
+  version: "2.1"
 servers:
-  - url: http://localhost:60024
+  - url: http://localhost:62133
     description: Generated server url
 tags:
   - name: Access Group
@@ -181,7 +181,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-  /{municipalityId}/{namespace}/access-config/group/{groupId}:
+  /{municipalityId}/{namespace}/access-config/group/{id}:
     get:
       tags:
         - Access Group
@@ -202,14 +202,13 @@ paths:
             type: string
             pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
-        - name: groupId
+        - name: id
           in: path
-          description: Group ID
+          description: Access group ID
           required: true
           schema:
             type: string
-            minLength: 1
-          example: group123
+          example: 550e8400-e29b-41d4-a716-446655440000
       responses:
         "200":
           description: Successful operation
@@ -257,14 +256,13 @@ paths:
             type: string
             pattern: "[\\w|\\-]+"
           example: MY_NAMESPACE
-        - name: groupId
+        - name: id
           in: path
-          description: Group ID
+          description: Access group ID
           required: true
           schema:
             type: string
-            minLength: 1
-          example: group123
+          example: 550e8400-e29b-41d4-a716-446655440000
       requestBody:
         content:
           application/json:
@@ -294,61 +292,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-    post:
-      tags:
-        - Access Group
-      operationId: createAccessGroup
-      parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality ID
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: namespace
-          in: path
-          description: Namespace
-          required: true
-          schema:
-            type: string
-            pattern: "[\\w|\\-]+"
-          example: MY_NAMESPACE
-        - name: groupId
-          in: path
-          description: Group ID
-          required: true
-          schema:
-            type: string
-            minLength: 1
-          example: group123
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AccessGroup"
-        required: true
-      responses:
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "201":
-          description: Successfully created
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/AccessGroup"
     delete:
       tags:
         - Access Group
@@ -726,9 +669,9 @@ components:
         type:
           type: string
           format: uri
-        title:
-          type: string
         detail:
+          type: string
+        title:
           type: string
         status:
           type: integer
@@ -751,10 +694,10 @@ components:
         instance:
           type: string
           format: uri
-        detail:
-          type: string
         causeAsProblem:
           $ref: "#/components/schemas/ThrowableProblem"
+        detail:
+          type: string
     ThrowableProblem:
       type: object
       properties:
