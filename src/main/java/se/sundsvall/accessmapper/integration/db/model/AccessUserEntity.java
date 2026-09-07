@@ -30,7 +30,7 @@ public class AccessUserEntity {
 	@Column(name = "user_id")
 	private String userId;
 
-	@Column(name = "origin")
+	@Column(name = "origin", nullable = false)
 	private String origin;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

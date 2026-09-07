@@ -27,7 +27,7 @@ create table access_user (
                              id varchar(255) not null,
                              municipality_id varchar(255),
                              namespace varchar(255),
-                             origin varchar(255),
+                             origin varchar(255) not null,
                              user_id varchar(255),
                              primary key (id)
 ) engine=InnoDB;
