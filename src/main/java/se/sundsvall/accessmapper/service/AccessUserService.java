@@ -1,6 +1,7 @@
 package se.sundsvall.accessmapper.service;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import se.sundsvall.accessmapper.api.model.AccessUser;
 import se.sundsvall.accessmapper.integration.db.AccessUserRepository;
@@ -23,8 +24,10 @@ public class AccessUserService {
 		this.accessUserRepository = accessUserRepository;
 	}
 
-	public List<AccessUser> getAccessUsers(final String municipalityId, final String namespace) {
-		return toAccessUsers(accessUserRepository.findAllByMunicipalityIdAndNamespace(municipalityId, namespace));
+	public List<AccessUser> getAccessUsers(final String municipalityId, final String namespace, final String origin) {
+		return toAccessUsers(Optional.ofNullable(origin)
+			.map(o -> accessUserRepository.findAllByMunicipalityIdAndNamespaceAndOrigin(municipalityId, namespace, o))
+			.orElseGet(() -> accessUserRepository.findAllByMunicipalityIdAndNamespace(municipalityId, namespace)));
 	}
 
 	public AccessUser getAccessUser(final String municipalityId, final String namespace, final String id) {

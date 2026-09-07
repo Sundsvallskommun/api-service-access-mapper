@@ -11,6 +11,8 @@ public interface AccessUserRepository extends JpaRepository<AccessUserEntity, St
 
 	List<AccessUserEntity> findAllByMunicipalityIdAndNamespace(String municipalityId, String namespace);
 
+	List<AccessUserEntity> findAllByMunicipalityIdAndNamespaceAndOrigin(String municipalityId, String namespace, String origin);
+
 	Optional<AccessUserEntity> findByMunicipalityIdAndNamespaceAndId(String municipalityId, String namespace, String id);
 
 	List<AccessUserEntity> findAllByMunicipalityIdAndNamespaceAndUserId(String municipalityId, String namespace, String userId);

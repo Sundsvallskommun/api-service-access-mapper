@@ -47,7 +47,7 @@ class AccessUserConfigResourceTest {
 		// Arrange
 		final var accessUsers = List.of(new AccessUser());
 
-		when(accessUserServiceMock.getAccessUsers(MUNICIPALITY_ID, NAMESPACE)).thenReturn(accessUsers);
+		when(accessUserServiceMock.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null)).thenReturn(accessUsers);
 
 		final var response = webTestClient.get().uri(builder -> builder.path(PATH)
 			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
@@ -60,7 +60,30 @@ class AccessUserConfigResourceTest {
 		assertThat(response.getResponseBody()).isEqualTo(accessUsers);
 
 		// Assert
-		verify(accessUserServiceMock).getAccessUsers(MUNICIPALITY_ID, NAMESPACE);
+		verify(accessUserServiceMock).getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null);
+	}
+
+	@Test
+	void getAccessUsersWithOriginFilter() {
+		// Arrange
+		final var accessUsers = List.of(new AccessUser());
+		final var origin = "MANUAL";
+
+		when(accessUserServiceMock.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, origin)).thenReturn(accessUsers);
+
+		final var response = webTestClient.get().uri(builder -> builder.path(PATH)
+			.queryParam("origin", origin)
+			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON)
+			.expectBodyList(AccessUser.class)
+			.returnResult();
+
+		assertThat(response.getResponseBody()).isEqualTo(accessUsers);
+
+		// Assert
+		verify(accessUserServiceMock).getAccessUsers(MUNICIPALITY_ID, NAMESPACE, origin);
 	}
 
 	@Test

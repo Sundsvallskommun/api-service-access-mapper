@@ -30,6 +30,9 @@ public class AccessUserEntity {
 	@Column(name = "user_id")
 	private String userId;
 
+	@Column(name = "origin", nullable = false)
+	private String origin;
+
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "access_user_id", foreignKey = @ForeignKey(name = "fk_access_user_id"))
 	private List<AccessTypeEntity> accessByType;
@@ -90,6 +93,19 @@ public class AccessUserEntity {
 		return this;
 	}
 
+	public String getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(final String origin) {
+		this.origin = origin;
+	}
+
+	public AccessUserEntity withOrigin(final String origin) {
+		this.origin = origin;
+		return this;
+	}
+
 	public List<AccessTypeEntity> getAccessByType() {
 		return accessByType;
 	}
@@ -108,12 +124,13 @@ public class AccessUserEntity {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		final AccessUserEntity that = (AccessUserEntity) o;
-		return Objects.equals(id, that.id) && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(namespace, that.namespace) && Objects.equals(userId, that.userId) && Objects.equals(accessByType, that.accessByType);
+		return Objects.equals(id, that.id) && Objects.equals(municipalityId, that.municipalityId) && Objects.equals(namespace, that.namespace) && Objects.equals(userId, that.userId) && Objects.equals(origin, that.origin) && Objects.equals(accessByType,
+			that.accessByType);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, municipalityId, namespace, userId, accessByType);
+		return Objects.hash(id, municipalityId, namespace, userId, origin, accessByType);
 	}
 
 	@Override
@@ -123,6 +140,7 @@ public class AccessUserEntity {
 			", municipalityId='" + municipalityId + '\'' +
 			", namespace='" + namespace + '\'' +
 			", userId='" + userId + '\'' +
+			", origin='" + origin + '\'' +
 			", accessByType=" + accessByType +
 			'}';
 	}

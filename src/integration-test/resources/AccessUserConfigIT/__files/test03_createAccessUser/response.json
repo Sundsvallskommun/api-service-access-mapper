@@ -1,6 +1,7 @@
 {
 	"id": "${json-unit.any-string}",
 	"userId": "jane01doe",
+	"origin": "MANUAL",
 	"accessByType": [
 		{
 			"type": "label",

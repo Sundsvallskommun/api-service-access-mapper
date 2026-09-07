@@ -88,6 +88,7 @@ public final class Mapper {
 		return AccessUser.create()
 			.withId(entity.getId())
 			.withUserId(entity.getUserId())
+			.withOrigin(entity.getOrigin())
 			.withAccessByType(toAccessTypes(entity.getAccessByType()));
 	}
 
@@ -96,11 +97,13 @@ public final class Mapper {
 			.withMunicipalityId(municipalityId)
 			.withNamespace(namespace)
 			.withUserId(accessUser.getUserId())
+			.withOrigin(Optional.ofNullable(accessUser.getOrigin()).orElse("MANUAL"))
 			.withAccessByType(toAccessTypeEntities(accessUser.getAccessByType()));
 	}
 
 	public static void updateAccessUserEntity(final AccessUserEntity entity, final AccessUser accessUser) {
 		entity.setUserId(accessUser.getUserId());
+		entity.setOrigin(Optional.ofNullable(accessUser.getOrigin()).orElse("MANUAL"));
 		entity.getAccessByType().clear();
 		entity.getAccessByType().addAll(toAccessTypeEntities(accessUser.getAccessByType()));
 	}

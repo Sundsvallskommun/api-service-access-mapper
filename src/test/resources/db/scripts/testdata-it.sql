@@ -4,8 +4,8 @@ VALUES ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '2281', 'NAMESPACE-1', '11111111
        ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '2281', 'NAMESPACE-1', '22222222-2222-2222-2222-222222222222');
 
 -- Insert access users
-INSERT INTO access_user (id, municipality_id, namespace, user_id)
-VALUES ('33333333-3333-3333-3333-333333333333', '2281', 'NAMESPACE-1', 'joe01doe');
+INSERT INTO access_user (id, municipality_id, namespace, user_id, origin)
+VALUES ('33333333-3333-3333-3333-333333333333', '2281', 'NAMESPACE-1', 'joe01doe', 'MANUAL');
 
 -- Insert access types for groups
 INSERT INTO access_type (id, type, access_group_id)
