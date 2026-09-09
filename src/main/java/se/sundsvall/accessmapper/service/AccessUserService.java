@@ -49,9 +49,14 @@ public class AccessUserService {
 		if (storedPattern == null || value == null) {
 			return false;
 		}
+		// Stored pattern matches value (e.g. stored "LOCATION/9326/**" matches value "LOCATION/9326/4214")
 		final var regex = Pattern.quote(storedPattern)
 			.replace("**", "\\E.*\\Q");
-		return value.matches(regex);
+		if (value.matches(regex)) {
+			return true;
+		}
+		// Value is a prefix of stored pattern (e.g. value "LOCATION/9326" matches stored "LOCATION/9326/4214/500010")
+		return storedPattern.startsWith(value + "/") || storedPattern.equals(value);
 	}
 
 	public AccessUser getAccessUser(final String municipalityId, final String namespace, final String id) {

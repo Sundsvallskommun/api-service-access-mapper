@@ -145,6 +145,60 @@ class AccessUserServiceTest {
 	}
 
 	@Test
+	void getAccessUsersWithPatternFilterPrefixMatch() {
+		// Arrange
+		final var entity = AccessUserEntity.create()
+			.withId(ID)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withUserId(USER_ID)
+			.withAccessByType(List.of(AccessTypeEntity.create()
+				.withType(TYPE)
+				.withAccess(List.of(AccessEntity.create()
+					.withPattern("LOCATION/9326/4214/500010/500012")
+					.withAccessLevel(AccessLevel.LR.name())))));
+
+		when(accessUserRepositoryMock.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE))
+			.thenReturn(List.of(entity));
+
+		// Act
+		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, "LOCATION/9326");
+
+		// Assert
+		assertThat(response).hasSize(1);
+		assertThat(response.getFirst().getId()).isEqualTo(ID);
+
+		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
+	}
+
+	@Test
+	void getAccessUsersWithPatternFilterPrefixMatchOnWildcardPattern() {
+		// Arrange
+		final var entity = AccessUserEntity.create()
+			.withId(ID)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withUserId(USER_ID)
+			.withAccessByType(List.of(AccessTypeEntity.create()
+				.withType(TYPE)
+				.withAccess(List.of(AccessEntity.create()
+					.withPattern("LOCATION/9326/4214/500010/500012/**")
+					.withAccessLevel(AccessLevel.LR.name())))));
+
+		when(accessUserRepositoryMock.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE))
+			.thenReturn(List.of(entity));
+
+		// Act
+		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, "LOCATION/9326");
+
+		// Assert
+		assertThat(response).hasSize(1);
+		assertThat(response.getFirst().getId()).isEqualTo(ID);
+
+		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
+	}
+
+	@Test
 	void getAccessUsersWithPatternFilterNoMatch() {
 		// Arrange
 		final var entity = AccessUserEntity.create()
