@@ -63,7 +63,7 @@ class AccessUserServiceTest {
 			.thenReturn(List.of(entity));
 
 		// Act
-		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null);
+		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, null);
 
 		// Assert
 		assertThat(response).hasSize(1);
@@ -94,7 +94,7 @@ class AccessUserServiceTest {
 			.thenReturn(List.of(entity));
 
 		// Act
-		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, origin);
+		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, origin, null);
 
 		// Assert
 		assertThat(response).hasSize(1);
@@ -106,13 +106,78 @@ class AccessUserServiceTest {
 	}
 
 	@Test
+	void getAccessUsersWithPatternFilter() {
+		// Arrange
+		final var matchingEntity = AccessUserEntity.create()
+			.withId(ID)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withUserId(USER_ID)
+			.withAccessByType(List.of(AccessTypeEntity.create()
+				.withType(TYPE)
+				.withAccess(List.of(AccessEntity.create()
+					.withPattern("LOCATION/9326/4214/500010/500012/**")
+					.withAccessLevel(AccessLevel.LR.name())))));
+
+		final var nonMatchingEntity = AccessUserEntity.create()
+			.withId("other-id")
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withUserId("otherUser")
+			.withAccessByType(List.of(AccessTypeEntity.create()
+				.withType(TYPE)
+				.withAccess(List.of(AccessEntity.create()
+					.withPattern("LOCATION/1111/2222/**")
+					.withAccessLevel(AccessLevel.R.name())))));
+
+		when(accessUserRepositoryMock.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE))
+			.thenReturn(List.of(matchingEntity, nonMatchingEntity));
+
+		// Act
+		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, "LOCATION/9326/4214/500010/500012/7777");
+
+		// Assert
+		assertThat(response).hasSize(1);
+		assertThat(response.getFirst().getId()).isEqualTo(ID);
+		assertThat(response.getFirst().getUserId()).isEqualTo(USER_ID);
+
+		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
+	}
+
+	@Test
+	void getAccessUsersWithPatternFilterNoMatch() {
+		// Arrange
+		final var entity = AccessUserEntity.create()
+			.withId(ID)
+			.withMunicipalityId(MUNICIPALITY_ID)
+			.withNamespace(NAMESPACE)
+			.withUserId(USER_ID)
+			.withAccessByType(List.of(AccessTypeEntity.create()
+				.withType(TYPE)
+				.withAccess(List.of(AccessEntity.create()
+					.withPattern("LOCATION/9326/4214/500010/500012/**")
+					.withAccessLevel(AccessLevel.LR.name())))));
+
+		when(accessUserRepositoryMock.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE))
+			.thenReturn(List.of(entity));
+
+		// Act
+		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, "LOCATION/1111/2222/3333/4444/5555");
+
+		// Assert
+		assertThat(response).isEmpty();
+
+		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
+	}
+
+	@Test
 	void getAccessUsersEmpty() {
 		// Arrange
 		when(accessUserRepositoryMock.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE))
 			.thenReturn(List.of());
 
 		// Act
-		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null);
+		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, null);
 
 		// Assert
 		assertThat(response).isEmpty();

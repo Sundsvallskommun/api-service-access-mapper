@@ -2,6 +2,7 @@ package se.sundsvall.accessmapper.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 import se.sundsvall.accessmapper.api.model.AccessUser;
 import se.sundsvall.accessmapper.integration.db.AccessUserRepository;
@@ -24,10 +25,33 @@ public class AccessUserService {
 		this.accessUserRepository = accessUserRepository;
 	}
 
-	public List<AccessUser> getAccessUsers(final String municipalityId, final String namespace, final String origin) {
-		return toAccessUsers(Optional.ofNullable(origin)
+	public List<AccessUser> getAccessUsers(final String municipalityId, final String namespace, final String origin, final String pattern) {
+		final var entities = Optional.ofNullable(origin)
 			.map(o -> accessUserRepository.findAllByMunicipalityIdAndNamespaceAndOrigin(municipalityId, namespace, o))
-			.orElseGet(() -> accessUserRepository.findAllByMunicipalityIdAndNamespace(municipalityId, namespace)));
+			.orElseGet(() -> accessUserRepository.findAllByMunicipalityIdAndNamespace(municipalityId, namespace));
+
+		return Optional.ofNullable(pattern)
+			.map(p -> toAccessUsers(entities.stream()
+				.filter(entity -> hasMatchingPattern(entity, p))
+				.toList()))
+			.orElseGet(() -> toAccessUsers(entities));
+	}
+
+	private boolean hasMatchingPattern(final AccessUserEntity entity, final String patternToMatch) {
+		return Optional.ofNullable(entity.getAccessByType())
+			.orElse(List.of())
+			.stream()
+			.flatMap(accessType -> Optional.ofNullable(accessType.getAccess()).orElse(List.of()).stream())
+			.anyMatch(access -> matchesWildcardPattern(access.getPattern(), patternToMatch));
+	}
+
+	private boolean matchesWildcardPattern(final String storedPattern, final String value) {
+		if (storedPattern == null || value == null) {
+			return false;
+		}
+		final var regex = Pattern.quote(storedPattern)
+			.replace("**", "\\E.*\\Q");
+		return value.matches(regex);
 	}
 
 	public AccessUser getAccessUser(final String municipalityId, final String namespace, final String id) {
