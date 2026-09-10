@@ -5,9 +5,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 import se.sundsvall.accessmapper.api.model.Access;
 import se.sundsvall.accessmapper.api.model.AccessLevel;
 import se.sundsvall.accessmapper.api.model.AccessType;
@@ -25,6 +29,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withOrigin;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withPattern;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withUserMunicipalityId;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withUserNamespace;
 
 @ExtendWith(MockitoExtension.class)
 class AccessUserServiceTest {
@@ -45,6 +53,9 @@ class AccessUserServiceTest {
 	@InjectMocks
 	private AccessUserService service;
 
+	@Captor
+	private ArgumentCaptor<Specification<AccessUserEntity>> specificationCaptor;
+
 	@Test
 	void getAccessUsers() {
 		// Arrange
@@ -59,7 +70,7 @@ class AccessUserServiceTest {
 					.withPattern("pattern")
 					.withAccessLevel(AccessLevel.LR.name())))));
 
-		when(accessUserRepositoryMock.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE))
+		when(accessUserRepositoryMock.findAll(ArgumentMatchers.<Specification<AccessUserEntity>>any()))
 			.thenReturn(List.of(entity));
 
 		// Act
@@ -71,7 +82,9 @@ class AccessUserServiceTest {
 		assertThat(response.getFirst().getUserId()).isEqualTo(USER_ID);
 		assertThat(response.getFirst().getAccessByType()).hasSize(1);
 
-		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
+		verify(accessUserRepositoryMock).findAll(specificationCaptor.capture());
+		assertThat(specificationCaptor.getValue()).usingRecursiveComparison()
+			.isEqualTo(withUserMunicipalityId(MUNICIPALITY_ID).and(withUserNamespace(NAMESPACE)).and(withOrigin(null)).and(withPattern(null)));
 	}
 
 	@Test
@@ -90,7 +103,7 @@ class AccessUserServiceTest {
 					.withPattern("pattern")
 					.withAccessLevel(AccessLevel.LR.name())))));
 
-		when(accessUserRepositoryMock.findAllByMunicipalityIdAndNamespaceAndOrigin(MUNICIPALITY_ID, NAMESPACE, origin))
+		when(accessUserRepositoryMock.findAll(ArgumentMatchers.<Specification<AccessUserEntity>>any()))
 			.thenReturn(List.of(entity));
 
 		// Act
@@ -102,51 +115,15 @@ class AccessUserServiceTest {
 		assertThat(response.getFirst().getUserId()).isEqualTo(USER_ID);
 		assertThat(response.getFirst().getOrigin()).isEqualTo(origin);
 
-		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespaceAndOrigin(MUNICIPALITY_ID, NAMESPACE, origin);
+		verify(accessUserRepositoryMock).findAll(specificationCaptor.capture());
+		assertThat(specificationCaptor.getValue()).usingRecursiveComparison()
+			.isEqualTo(withUserMunicipalityId(MUNICIPALITY_ID).and(withUserNamespace(NAMESPACE)).and(withOrigin(origin)).and(withPattern(null)));
 	}
 
 	@Test
 	void getAccessUsersWithPatternFilter() {
 		// Arrange
-		final var matchingEntity = AccessUserEntity.create()
-			.withId(ID)
-			.withMunicipalityId(MUNICIPALITY_ID)
-			.withNamespace(NAMESPACE)
-			.withUserId(USER_ID)
-			.withAccessByType(List.of(AccessTypeEntity.create()
-				.withType(TYPE)
-				.withAccess(List.of(AccessEntity.create()
-					.withPattern("A/B/C/D/E")
-					.withAccessLevel(AccessLevel.LR.name())))));
-
-		final var nonMatchingEntity = AccessUserEntity.create()
-			.withId("other-id")
-			.withMunicipalityId(MUNICIPALITY_ID)
-			.withNamespace(NAMESPACE)
-			.withUserId("otherUser")
-			.withAccessByType(List.of(AccessTypeEntity.create()
-				.withType(TYPE)
-				.withAccess(List.of(AccessEntity.create()
-					.withPattern("X/Y/Z")
-					.withAccessLevel(AccessLevel.R.name())))));
-
-		when(accessUserRepositoryMock.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE))
-			.thenReturn(List.of(matchingEntity, nonMatchingEntity));
-
-		// Act
-		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, "A/B/C/D/E");
-
-		// Assert
-		assertThat(response).hasSize(1);
-		assertThat(response.getFirst().getId()).isEqualTo(ID);
-		assertThat(response.getFirst().getUserId()).isEqualTo(USER_ID);
-
-		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
-	}
-
-	@Test
-	void getAccessUsersWithPatternFilterNoMatch() {
-		// Arrange
+		final var pattern = "A/B/C/D/E";
 		final var entity = AccessUserEntity.create()
 			.withId(ID)
 			.withMunicipalityId(MUNICIPALITY_ID)
@@ -155,25 +132,29 @@ class AccessUserServiceTest {
 			.withAccessByType(List.of(AccessTypeEntity.create()
 				.withType(TYPE)
 				.withAccess(List.of(AccessEntity.create()
-					.withPattern("A/B/C/D/E")
+					.withPattern(pattern)
 					.withAccessLevel(AccessLevel.LR.name())))));
 
-		when(accessUserRepositoryMock.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE))
+		when(accessUserRepositoryMock.findAll(ArgumentMatchers.<Specification<AccessUserEntity>>any()))
 			.thenReturn(List.of(entity));
 
 		// Act
-		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, "X/Y/Z");
+		final var response = service.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, pattern);
 
 		// Assert
-		assertThat(response).isEmpty();
+		assertThat(response).hasSize(1);
+		assertThat(response.getFirst().getId()).isEqualTo(ID);
+		assertThat(response.getFirst().getUserId()).isEqualTo(USER_ID);
 
-		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
+		verify(accessUserRepositoryMock).findAll(specificationCaptor.capture());
+		assertThat(specificationCaptor.getValue()).usingRecursiveComparison()
+			.isEqualTo(withUserMunicipalityId(MUNICIPALITY_ID).and(withUserNamespace(NAMESPACE)).and(withOrigin(null)).and(withPattern(pattern)));
 	}
 
 	@Test
 	void getAccessUsersEmpty() {
 		// Arrange
-		when(accessUserRepositoryMock.findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE))
+		when(accessUserRepositoryMock.findAll(ArgumentMatchers.<Specification<AccessUserEntity>>any()))
 			.thenReturn(List.of());
 
 		// Act
@@ -182,7 +163,9 @@ class AccessUserServiceTest {
 		// Assert
 		assertThat(response).isEmpty();
 
-		verify(accessUserRepositoryMock).findAllByMunicipalityIdAndNamespace(MUNICIPALITY_ID, NAMESPACE);
+		verify(accessUserRepositoryMock).findAll(specificationCaptor.capture());
+		assertThat(specificationCaptor.getValue()).usingRecursiveComparison()
+			.isEqualTo(withUserMunicipalityId(MUNICIPALITY_ID).and(withUserNamespace(NAMESPACE)).and(withOrigin(null)).and(withPattern(null)));
 	}
 
 	@Test

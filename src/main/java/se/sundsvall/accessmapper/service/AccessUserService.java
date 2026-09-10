@@ -1,7 +1,6 @@
 package se.sundsvall.accessmapper.service;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import se.sundsvall.accessmapper.api.model.AccessUser;
 import se.sundsvall.accessmapper.integration.db.AccessUserRepository;
@@ -13,6 +12,10 @@ import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessUser;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessUserEntity;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.toAccessUsers;
 import static se.sundsvall.accessmapper.service.mapper.Mapper.updateAccessUserEntity;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withOrigin;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withPattern;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withUserMunicipalityId;
+import static se.sundsvall.accessmapper.service.util.SpecificationBuilder.withUserNamespace;
 import static se.sundsvall.dept44.util.LogUtils.sanitizeForLogging;
 
 @Service
@@ -25,30 +28,12 @@ public class AccessUserService {
 	}
 
 	public List<AccessUser> getAccessUsers(final String municipalityId, final String namespace, final String origin, final String pattern) {
-		final var entities = Optional.ofNullable(origin)
-			.map(o -> accessUserRepository.findAllByMunicipalityIdAndNamespaceAndOrigin(municipalityId, namespace, o))
-			.orElseGet(() -> accessUserRepository.findAllByMunicipalityIdAndNamespace(municipalityId, namespace));
+		final var specification = withUserMunicipalityId(municipalityId)
+			.and(withUserNamespace(namespace))
+			.and(withOrigin(origin))
+			.and(withPattern(pattern));
 
-		return Optional.ofNullable(pattern)
-			.map(p -> toAccessUsers(entities.stream()
-				.filter(entity -> hasMatchingPattern(entity, p))
-				.toList()))
-			.orElseGet(() -> toAccessUsers(entities));
-	}
-
-	private boolean hasMatchingPattern(final AccessUserEntity entity, final String patternToMatch) {
-		return Optional.ofNullable(entity.getAccessByType())
-			.orElse(List.of())
-			.stream()
-			.flatMap(accessType -> Optional.ofNullable(accessType.getAccess()).orElse(List.of()).stream())
-			.anyMatch(access -> matchesPattern(access.getPattern(), patternToMatch));
-	}
-
-	private boolean matchesPattern(final String storedPattern, final String value) {
-		if (storedPattern == null || value == null) {
-			return false;
-		}
-		return storedPattern.equals(value);
+		return toAccessUsers(accessUserRepository.findAll(specification));
 	}
 
 	public AccessUser getAccessUser(final String municipalityId, final String namespace, final String id) {
