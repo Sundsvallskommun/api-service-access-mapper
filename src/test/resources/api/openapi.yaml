@@ -5,9 +5,9 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "2.1"
+  version: "2.2"
 servers:
-  - url: http://localhost:52693
+  - url: http://localhost:49696
     description: Generated server url
 tags:
   - name: Access Group
@@ -370,6 +370,13 @@ paths:
           schema:
             type: string
           example: MANUAL
+        - name: pattern
+          in: query
+          description: Filter by exact access pattern match
+          required: false
+          schema:
+            type: string
+          example: A/B/C/D/E
       responses:
         "400":
           description: Bad request
@@ -675,9 +682,9 @@ components:
         type:
           type: string
           format: uri
-        title:
-          type: string
         detail:
+          type: string
+        title:
           type: string
         status:
           type: integer

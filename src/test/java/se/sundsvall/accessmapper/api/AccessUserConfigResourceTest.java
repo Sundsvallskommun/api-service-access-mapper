@@ -47,7 +47,7 @@ class AccessUserConfigResourceTest {
 		// Arrange
 		final var accessUsers = List.of(new AccessUser());
 
-		when(accessUserServiceMock.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null)).thenReturn(accessUsers);
+		when(accessUserServiceMock.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, null)).thenReturn(accessUsers);
 
 		final var response = webTestClient.get().uri(builder -> builder.path(PATH)
 			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
@@ -60,7 +60,7 @@ class AccessUserConfigResourceTest {
 		assertThat(response.getResponseBody()).isEqualTo(accessUsers);
 
 		// Assert
-		verify(accessUserServiceMock).getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null);
+		verify(accessUserServiceMock).getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, null);
 	}
 
 	@Test
@@ -69,7 +69,7 @@ class AccessUserConfigResourceTest {
 		final var accessUsers = List.of(new AccessUser());
 		final var origin = "MANUAL";
 
-		when(accessUserServiceMock.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, origin)).thenReturn(accessUsers);
+		when(accessUserServiceMock.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, origin, null)).thenReturn(accessUsers);
 
 		final var response = webTestClient.get().uri(builder -> builder.path(PATH)
 			.queryParam("origin", origin)
@@ -83,7 +83,30 @@ class AccessUserConfigResourceTest {
 		assertThat(response.getResponseBody()).isEqualTo(accessUsers);
 
 		// Assert
-		verify(accessUserServiceMock).getAccessUsers(MUNICIPALITY_ID, NAMESPACE, origin);
+		verify(accessUserServiceMock).getAccessUsers(MUNICIPALITY_ID, NAMESPACE, origin, null);
+	}
+
+	@Test
+	void getAccessUsersWithPatternFilter() {
+		// Arrange
+		final var accessUsers = List.of(new AccessUser());
+		final var pattern = "A/B/C/D/E";
+
+		when(accessUserServiceMock.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, pattern)).thenReturn(accessUsers);
+
+		final var response = webTestClient.get().uri(builder -> builder.path(PATH)
+			.queryParam("pattern", pattern)
+			.build(Map.of("municipalityId", MUNICIPALITY_ID, "namespace", NAMESPACE)))
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(APPLICATION_JSON)
+			.expectBodyList(AccessUser.class)
+			.returnResult();
+
+		assertThat(response.getResponseBody()).isEqualTo(accessUsers);
+
+		// Assert
+		verify(accessUserServiceMock).getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, pattern);
 	}
 
 	@Test

@@ -2,12 +2,14 @@ package se.sundsvall.accessmapper.service.util;
 
 import org.springframework.data.jpa.domain.Specification;
 import se.sundsvall.accessmapper.integration.db.model.AccessGroupEntity;
+import se.sundsvall.accessmapper.integration.db.model.AccessUserEntity;
 
 import static java.util.Objects.nonNull;
 
 public class SpecificationBuilder<T> {
 
 	private static final SpecificationBuilder<AccessGroupEntity> ACCESS_GROUP_ENTITY_SPECIFICATION_BUILDER = new SpecificationBuilder<>();
+	private static final SpecificationBuilder<AccessUserEntity> ACCESS_USER_ENTITY_SPECIFICATION_BUILDER = new SpecificationBuilder<>();
 
 	public static Specification<AccessGroupEntity> withNamespace(final String namespace) {
 		return ACCESS_GROUP_ENTITY_SPECIFICATION_BUILDER.buildEqualFilter("namespace", namespace);
@@ -19,6 +21,22 @@ public class SpecificationBuilder<T> {
 
 	public static Specification<AccessGroupEntity> withAccessType(final String type) {
 		return ACCESS_GROUP_ENTITY_SPECIFICATION_BUILDER.buildAccessTypeFilter(type);
+	}
+
+	public static Specification<AccessUserEntity> withUserMunicipalityId(final String municipalityId) {
+		return ACCESS_USER_ENTITY_SPECIFICATION_BUILDER.buildEqualFilter("municipalityId", municipalityId);
+	}
+
+	public static Specification<AccessUserEntity> withUserNamespace(final String namespace) {
+		return ACCESS_USER_ENTITY_SPECIFICATION_BUILDER.buildEqualFilter("namespace", namespace);
+	}
+
+	public static Specification<AccessUserEntity> withOrigin(final String origin) {
+		return ACCESS_USER_ENTITY_SPECIFICATION_BUILDER.buildEqualFilter("origin", origin);
+	}
+
+	public static Specification<AccessUserEntity> withPattern(final String pattern) {
+		return ACCESS_USER_ENTITY_SPECIFICATION_BUILDER.buildPatternFilter(pattern);
 	}
 
 	/**
@@ -39,6 +57,16 @@ public class SpecificationBuilder<T> {
 				return cb.and();
 			}
 			return cb.equal(entity.join("accessByType").get("type"), type);
+		};
+	}
+
+	private Specification<T> buildPatternFilter(final String pattern) {
+		return (entity, cq, cb) -> {
+			if (pattern == null) {
+				return cb.and();
+			}
+			cq.distinct(true);
+			return cb.equal(entity.join("accessByType").join("access").get("pattern"), pattern);
 		};
 	}
 }

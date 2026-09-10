@@ -57,8 +57,10 @@ class AccessUserConfigResource {
 	ResponseEntity<List<AccessUser>> getAccessUsers(
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@Parameter(name = "namespace", description = "Namespace", example = "MY_NAMESPACE") @Pattern(regexp = NAMESPACE_REGEXP, message = NAMESPACE_VALIDATION_MESSAGE) @PathVariable final String namespace,
-		@Parameter(name = "origin", description = "Filter by origin", example = "MANUAL") @RequestParam(required = false) final String origin) {
-		return ResponseEntity.ok(accessUserService.getAccessUsers(municipalityId, namespace, origin));
+		@Parameter(name = "origin", description = "Filter by origin", example = "MANUAL") @RequestParam(required = false) final String origin,
+		@Parameter(name = "pattern", description = "Filter by exact access pattern match", example = "A/B/C/D/E") @RequestParam(
+			required = false) final String pattern) {
+		return ResponseEntity.ok(accessUserService.getAccessUsers(municipalityId, namespace, origin, pattern));
 	}
 
 	@GetMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
