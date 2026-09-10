@@ -90,7 +90,7 @@ class AccessUserConfigResourceTest {
 	void getAccessUsersWithPatternFilter() {
 		// Arrange
 		final var accessUsers = List.of(new AccessUser());
-		final var pattern = "LOCATION/9326/4214/500010/500012/7777";
+		final var pattern = "A/B/C/D/E";
 
 		when(accessUserServiceMock.getAccessUsers(MUNICIPALITY_ID, NAMESPACE, null, pattern)).thenReturn(accessUsers);
 

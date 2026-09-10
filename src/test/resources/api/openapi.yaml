@@ -372,12 +372,11 @@ paths:
           example: MANUAL
         - name: pattern
           in: query
-          description: "Filter by access pattern match, e.g. LOCATION/1111/2222/3333/4444/5555\
-          \ matches stored pattern LOCATION/1111/2222/3333/4444/**"
+          description: Filter by exact access pattern match
           required: false
           schema:
             type: string
-          example: LOCATION/1111/2222/3333/4444/5555
+          example: A/B/C/D/E
       responses:
         "400":
           description: Bad request

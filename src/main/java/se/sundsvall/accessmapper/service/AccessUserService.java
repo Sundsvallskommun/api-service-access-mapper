@@ -2,7 +2,6 @@ package se.sundsvall.accessmapper.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 import se.sundsvall.accessmapper.api.model.AccessUser;
 import se.sundsvall.accessmapper.integration.db.AccessUserRepository;
@@ -42,21 +41,14 @@ public class AccessUserService {
 			.orElse(List.of())
 			.stream()
 			.flatMap(accessType -> Optional.ofNullable(accessType.getAccess()).orElse(List.of()).stream())
-			.anyMatch(access -> matchesWildcardPattern(access.getPattern(), patternToMatch));
+			.anyMatch(access -> matchesPattern(access.getPattern(), patternToMatch));
 	}
 
-	private boolean matchesWildcardPattern(final String storedPattern, final String value) {
+	private boolean matchesPattern(final String storedPattern, final String value) {
 		if (storedPattern == null || value == null) {
 			return false;
 		}
-		// Stored pattern matches value (e.g. stored "LOCATION/9326/**" matches value "LOCATION/9326/4214")
-		final var regex = Pattern.quote(storedPattern)
-			.replace("**", "\\E.*\\Q");
-		if (value.matches(regex)) {
-			return true;
-		}
-		// Value is a prefix of stored pattern (e.g. value "LOCATION/9326" matches stored "LOCATION/9326/4214/500010")
-		return storedPattern.startsWith(value + "/") || storedPattern.equals(value);
+		return storedPattern.equals(value);
 	}
 
 	public AccessUser getAccessUser(final String municipalityId, final String namespace, final String id) {
