@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import se.sundsvall.accessmapper.api.model.AccessGroup;
 import se.sundsvall.accessmapper.integration.activedirectory.ActiveDirectoryClient;
 import se.sundsvall.accessmapper.integration.activedirectory.configuration.ActiveDirectoryProperties;
 import se.sundsvall.accessmapper.integration.db.AccessGroupRepository;
 import se.sundsvall.accessmapper.integration.db.AccessUserRepository;
+import se.sundsvall.accessmapper.integration.db.model.AccessTypeEntity;
 import se.sundsvall.accessmapper.service.mapper.Mapper;
 import se.sundsvall.dept44.problem.ThrowableProblem;
 
@@ -50,19 +52,34 @@ public class AccessService {
 			.filter(Objects::nonNull)
 			.map(guid -> accessGroupRepository.findByMunicipalityIdAndNamespaceAndGroupId(municipalityId, namespace, guid.toString()))
 			.filter(Objects::nonNull)
-			.filter(accessGroup -> type == null || accessGroup.getAccessByType().stream()
-				.anyMatch(accessType -> type.equals(accessType.getType())))
+			.map(accessGroup -> {
+				accessGroup.setAccessByType(filterAccessByType(accessGroup.getAccessByType(), type));
+				return accessGroup;
+			})
+			.filter(accessGroup -> !accessGroup.getAccessByType().isEmpty())
 			.toList();
 
 		final var result = new ArrayList<>(toAccessGroups(accessGroups));
 
 		accessUserRepository.findAllByMunicipalityIdAndNamespaceAndUserId(municipalityId, namespace, adId)
 			.stream()
-			.filter(user -> type == null || user.getAccessByType().stream()
-				.anyMatch(accessType -> type.equals(accessType.getType())))
+			.map(user -> {
+				user.setAccessByType(filterAccessByType(user.getAccessByType(), type));
+				return user;
+			})
+			.filter(user -> !user.getAccessByType().isEmpty())
 			.map(Mapper::toAccessGroupFromUser)
 			.forEach(result::add);
 
 		return result;
+	}
+
+	private List<AccessTypeEntity> filterAccessByType(final List<AccessTypeEntity> accessByType, final String type) {
+		if (type == null) {
+			return accessByType;
+		}
+		return Optional.ofNullable(accessByType).orElse(List.of()).stream()
+			.filter(accessType -> type.equals(accessType.getType()))
+			.toList();
 	}
 }
