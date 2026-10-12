@@ -1,8 +1,5 @@
 package se.sundsvall.accessmapper;
 
-import static java.nio.file.Files.writeString;
-import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import java.io.IOException;
@@ -20,6 +17,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.util.UriComponentsBuilder;
 import se.sundsvall.dept44.util.ResourceUtils;
+
+import static java.nio.file.Files.writeString;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 @ActiveProfiles("it")
 @SpringBootTest(
@@ -76,8 +76,8 @@ class OpenApiSpecificationIT {
 	/**
 	 * Attempts to convert the given YAML (no YAML-check...) to JSON.
 	 *
-	 * @param yaml the YAML to convert
-	 * @return a JSON string
+	 * @param  yaml the YAML to convert
+	 * @return      a JSON string
 	 */
 	private String toJson(final String yaml) {
 		try {
